@@ -6,7 +6,14 @@
     <div class="board-date">
       {{ board.date }}
     </div>
-    <Button class="board-button" @click="$router.push(`/board/${board.id}`)">Edit this</Button>
+    <div class="board-author">
+      Created by {{board.author}}
+    </div>
+    <h3>Участники: </h3>
+    <div class="board-members">
+      {{board.members}}
+    </div>
+    <Button class="board-button" @click="$router.push(`/board/${board.id}`);">Edit this</Button>
   </div>
 </template>
 

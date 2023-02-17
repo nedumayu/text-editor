@@ -2,12 +2,19 @@
   <div class="board">
     <Editor :board="boardStore.boards[$route.params.id-1]"/>
     <div class="board-info">
-      <h2>Доска #{{ $route.params.id }}</h2>
+      <h2>Доска #{{ board.id }}</h2>
       <div>
-        Название: {{ boardStore.boards[$route.params.id-1].title }}
+        Название: {{ board.title }}
       </div>
       <div>
-        Дата: {{ boardStore.boards[$route.params.id-1].date }}
+        Дата: {{ board.date }}
+      </div>
+      <div>
+        Автор: {{ board.author }}
+      </div>
+      <h3>Участнки: </h3>
+      <div>
+         {{ board.members }}
       </div>
     </div>
   </div>
@@ -16,9 +23,12 @@
 <script setup>
 import {useBoardStore} from "../stores/BoardStore.js";
 import Editor from "../components/Editor.vue";
+import {useRoute} from 'vue-router'
 
 const boardStore = useBoardStore();
+const route = useRoute();
 
+const board = boardStore.boards[route.params.id-1]
 </script>
 
 <style scoped>

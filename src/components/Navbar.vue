@@ -1,23 +1,22 @@
 <template>
   <div class="navbar">
-    <div @click="$router.push('/')"  class="logo">
+    <div @click="$router.push('/')" class="logo">
       Text Editor
     </div>
     <div class="navbar-buttons">
-      <Button @click="$router.push('/boards')" class="menu-item">
-        Boards
-      </Button>
-      <Button @click="$router.push('/profile')" class="menu-item">
-        Profile
-      </Button>
+      <router-link to="/boards" class="menu-item">Boards</router-link>
+      <router-link to="/profile" class="menu-item" v-if="userStore.isAuth">Profile</router-link>
+      <div v-else>
+        <router-link to="/register" class="menu-item">Register</router-link>
+        <router-link to="/login" class="menu-item">Login</router-link>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-
-}
+<script setup>
+import {useUserStore} from '../stores/UserStore.js'
+const userStore = useUserStore();
 </script>
 
 <style scoped>
@@ -37,11 +36,6 @@ export default {
   justify-content: space-between;
 }
 
-.menu-item {
-  margin-right: 20px;
-  font-size: 14px;
-}
-
 .logo {
   font-weight: bold;
   margin-right: 20px;
@@ -52,4 +46,17 @@ export default {
   opacity: 0.7;
 }
 
+.menu-item {
+  margin-right: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover,
+a.router-link-active {
+  border-bottom: 1px solid black;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <button class="btn">
+  <button class="btn" type="button">
     <slot></slot>
   </button>
 </template>
@@ -12,6 +12,7 @@ export default {
 
 <style scoped>
 .btn {
+  font-size: 14px;
   padding: 10px 20px;
   background: none;
   text-transform: uppercase;

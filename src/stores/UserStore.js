@@ -17,6 +17,13 @@ export const useUserStore = defineStore('userStore', {
                 password: '123',
                 boards: [1, 2]
             }
-        ]
-    })
+        ],
+        isAuth: false,
+        currentUser: {}
+    }),
+    actions: {
+        addUser(user) {
+            this.users.push(user);
+        }
+    }
 })

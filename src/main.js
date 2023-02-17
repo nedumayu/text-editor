@@ -12,6 +12,6 @@ components.forEach(component => {
 })
 
 app
-    .use(router)
     .use(createPinia())
+    .use(router)
     .mount('#app')
