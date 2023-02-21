@@ -16,3 +16,6 @@ main {
     outline: none;
 }
 
+.login-input {
+    margin-bottom: 15px;
+}

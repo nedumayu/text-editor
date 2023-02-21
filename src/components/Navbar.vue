@@ -8,7 +8,7 @@
       <router-link to="/profile" class="menu-item" v-if="userStore.isAuth">Profile</router-link>
       <div v-else>
         <router-link to="/register" class="menu-item">Register</router-link>
-        <router-link to="/login" class="menu-item">Login</router-link>
+        <router-link to="/login">Login</router-link>
       </div>
     </div>
   </div>

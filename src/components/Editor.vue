@@ -2,7 +2,7 @@
   <div>
     <div v-if="editor" class="editor">
       <MenuBar class="editor__header" :editor="editor" />
-      <EditorContent class="editor__content" :editor="editor"/>
+      <EditorContent class="editor__content" :editor="editor" v-focus/>
     </div>
   </div>
 </template>
@@ -74,6 +74,8 @@ const editor = new Editor({
   ],
 });
 
+editor.commands.focus('end')
+
 onBeforeUnmount(() => {
   //provider.destroy();
   editor.destroy();
@@ -91,6 +93,7 @@ onBeforeUnmount(() => {
   background-color: #FFF;
   border: 3px solid #0D0D0D;
   border-radius: 0.75rem;
+  min-height: 80vh;
 }
 
 .editor__header {
@@ -108,7 +111,7 @@ onBeforeUnmount(() => {
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  min-height: 300px;
+  /*min-height: 71vh;*/
 }
 
 

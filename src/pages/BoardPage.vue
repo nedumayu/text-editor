@@ -1,6 +1,6 @@
 <template>
   <div class="board">
-    <Editor :board="boardStore.boards[$route.params.id-1]"/>
+    <Editor :board="board"/>
     <div class="board-info">
       <h2>Доска #{{ board.id }}</h2>
       <div>
@@ -10,9 +10,9 @@
         Дата: {{ board.date }}
       </div>
       <div>
-        Автор: {{ board.author }}
+        Автор: {{ board.author.username }}
       </div>
-      <h3>Участнки: </h3>
+      <h3>Участники: </h3>
       <div>
          {{ board.members }}
       </div>
@@ -28,7 +28,7 @@ import {useRoute} from 'vue-router'
 const boardStore = useBoardStore();
 const route = useRoute();
 
-const board = boardStore.boards[route.params.id-1]
+const board = boardStore.boards.find(b => b.id === Number(route.params.id));
 </script>
 
 <style scoped>
@@ -38,11 +38,12 @@ const board = boardStore.boards[route.params.id-1]
   gap: 20px;
 }
 
-.editor, .board-info {
+.board-info {
   box-sizing: border-box;
   border: 1px solid black;
-  height: 300px;
+  height: 80.5vh;
   padding: 20px;
+  border-radius: 0.75rem;
 }
 
 

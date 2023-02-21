@@ -5,23 +5,37 @@ export const useBoardStore = defineStore('boardStore', {
     state: () => ({
         boards: [
             {
-                id: 1,
+                id: 0,
                 title: 'First note is here',
-                date: '12.10.2023',
+                date: new Date(),
                 content: 'Edit this string',
-                isActive: true,
-                author: 'Alice',
-                members: ['Hu Tao'],
+                isActive: false,
+                author: {
+                    id: 1,
+                    username: 'Alice'
+                },
+                members: [{
+                    id: 2,
+                    username: 'User'
+                }],
             },
             {
-                id: 2,
+                id: 1,
                 title: 'Second note is here',
-                date: '13.12.2022',
+                date: new Date(),
                 content: 'Edit this string with some tools',
                 isActive: true,
-                author: 'Hu Tao',
+                author: {
+                    id: 1,
+                    username: 'User'
+                },
                 members: [],
             }
         ]
-    })
+    }),
+    actions: {
+        addBoard(board) {
+            this.boards.push(board);
+        }
+    }
 })

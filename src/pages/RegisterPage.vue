@@ -1,9 +1,9 @@
 <template>
   <form v-if="!isRegistered" class="register-form">
       <h1>Регистрация</h1>
-      <Input v-model="username" :type="textType" placeholder="Имя пользователя"/>
-      <Input v-model="email" :type="textType" placeholder="E-mail"/>
-      <Input v-model="password" :type="passType" placeholder="Пароль"/>
+      <Input class="login-input" v-model="username" :type="textType" placeholder="Имя пользователя"/>
+      <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
+      <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
       <Button @click="createUser">Зарегистрироваться</Button>
   </form>
   <h1 v-else style="width: 500px; margin: auto">Вы зарегистрированы!</h1>
@@ -16,10 +16,10 @@ import {ref} from 'vue'
 const textType = "text";
 const passType = "password";
 
-let username = ref('');
-let email = ref('');
-let password = ref('');
-let isRegistered = ref(false);
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const isRegistered = ref(false);
 
 const userStore = useUserStore()
 

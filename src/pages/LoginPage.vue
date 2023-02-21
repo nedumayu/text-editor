@@ -1,8 +1,8 @@
 <template>
   <form class="register-form" v-if="!isLogin">
     <h1>Вход в приложение</h1>
-    <Input v-model="email" :type="textType" placeholder="E-mail"/>
-    <Input v-model="password" :type="passType" placeholder="Пароль"/>
+    <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
+    <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
     <Button @click="login">Войти</Button>
     <div class="message">{{ message }}</div>
   </form>
@@ -44,10 +44,7 @@ const login = () => {
     }
   } else {
     message.value = 'Неверный E-mail!'
-
   }
-
-
 }
 </script>
 

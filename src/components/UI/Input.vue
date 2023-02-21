@@ -32,7 +32,6 @@ export default {
 .input {
   border: 1px solid black;
   padding: 8px 15px;
-  margin-bottom: 15px;
   font-size: 15px;
 }
 </style>

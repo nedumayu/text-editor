@@ -12,12 +12,16 @@
 
 <script setup>
 import {useUserStore} from '../stores/UserStore.js'
+import {useRouter} from "vue-router";
 
 const userStore = useUserStore();
+const router = useRouter();
 
 const logout = () => {
   userStore.isAuth = false;
   userStore.currentUser = {};
+
+  router.push('/');
 }
 </script>
 
