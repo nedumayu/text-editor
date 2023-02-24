@@ -1,17 +1,24 @@
 <template>
-  <form v-if="!isRegistered" class="register-form">
+  <div>
+    <form class="register-form">
       <h1>Регистрация</h1>
       <Input class="login-input" v-model="username" :type="textType" placeholder="Имя пользователя"/>
       <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
       <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
       <Button @click="createUser">Зарегистрироваться</Button>
-  </form>
-  <h1 v-else style="width: 500px; margin: auto">Вы зарегистрированы!</h1>
+    </form>
+    <Toast :show="messageVisible">
+      Вы зарегистрированы!
+    </Toast>
+  </div>
 </template>
 
 <script setup>
 import {useUserStore} from '../stores/UserStore.js'
 import {ref} from 'vue'
+import Toast from "../components/UI/Toast.vue";
+
+const userStore = useUserStore()
 
 const textType = "text";
 const passType = "password";
@@ -19,9 +26,7 @@ const passType = "password";
 const username = ref('');
 const email = ref('');
 const password = ref('');
-const isRegistered = ref(false);
-
-const userStore = useUserStore()
+const messageVisible = ref(false);
 
 const createUser = () => {
   const newUser = {
@@ -35,7 +40,10 @@ const createUser = () => {
   username.value = '';
   email.value = '';
   password.value = '';
-  isRegistered.value = true;
+  messageVisible.value = true;
+  setTimeout(() => {
+    messageVisible.value = false;
+  }, 3000);
 }
 </script>
 

@@ -1,12 +1,15 @@
 <template>
-  <form class="register-form" v-if="!isLogin">
-    <h1>Вход в приложение</h1>
-    <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
-    <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
-    <Button @click="login">Войти</Button>
-    <div class="message">{{ message }}</div>
-  </form>
-  <h1 v-else style="width: 300px; margin: auto">{{ message }}</h1>
+  <div>
+    <form class="register-form">
+      <h1>Вход в приложение</h1>
+      <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
+      <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
+      <Button @click="login">Войти</Button>
+    </form>
+    <Toast :show="messageVisible">
+      {{ message }}
+    </Toast>
+  </div>
 </template>
 
 <script setup>
@@ -20,10 +23,10 @@ const router = useRouter();
 const textType = "text";
 const passType = "password";
 
-let email = ref('');
-let password = ref('');
-let message = ref('');
-let isLogin = ref(false);
+const email = ref('');
+const password = ref('');
+const message = ref('');
+const messageVisible = ref(false);
 const userStore = useUserStore()
 
 const login = () => {
@@ -36,15 +39,25 @@ const login = () => {
         boards: userStore.users.find(user => user.email === email.value).boards,
       }
       userStore.isAuth = true;
-      message.value = 'Вы вошли!';
-      isLogin.value = true;
-      router.push('/profile');
+      showMessage('Вы вошли!')
+      setTimeout(() => {
+        router.push('/profile');
+      }, 1000);
+
     } else {
-      message.value = "Неверный пароль!";
+      showMessage('Неверный пароль!')
     }
   } else {
-    message.value = 'Неверный E-mail!'
+    showMessage('Неверный E-mail!')
   }
+}
+
+const showMessage = (msg) => {
+  message.value = msg;
+  messageVisible.value = true;
+  setTimeout(() => {
+    messageVisible.value = false;
+  }, 2000);
 }
 </script>
 
