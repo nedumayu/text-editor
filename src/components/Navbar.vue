@@ -40,6 +40,7 @@ const userStore = useUserStore();
   font-weight: bold;
   margin-right: 20px;
   width: 130px;
+  cursor: pointer;
 }
 
 .logo:hover {

@@ -7,15 +7,21 @@
         Название: {{ board.title }}
       </div>
       <div>
-        Дата: {{ board.date }}
+        Дата: {{ board.date.getDate() }}.{{ board.date.getMonth() + 1 }}.{{ board.date.getFullYear() }}
+        {{ board.date.getHours() }}:{{ board.date.getMinutes() }}:{{ board.date.getSeconds() }}
       </div>
       <div>
         Автор: {{ board.author.username }}
       </div>
-      <h3>Участники: </h3>
-      <div>
-         {{ board.members }}
+      <div v-if="board.members.length > 0">
+        <h4>Участники: </h4>
+        <div class="board-members">
+          <div class="board-member" v-for="member of board.members" :key="member.id">
+            {{ member.username }}
+          </div>
+        </div>
       </div>
+      <div v-else></div>
     </div>
   </div>
 </template>
@@ -46,5 +52,15 @@ const board = boardStore.boards.find(b => b.id === Number(route.params.id));
   border-radius: 0.75rem;
 }
 
+.board-members {
+  display: flex;
+}
 
+.board-member {
+  background: rgba(215, 215, 215, 0.4);
+  padding: 5px;
+  margin-right: 5px;
+  border-radius: 10px;
+  cursor: default;
+}
 </style>

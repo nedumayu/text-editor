@@ -26,7 +26,7 @@ export const useBoardStore = defineStore('boardStore', {
                 content: 'Edit this string with some tools',
                 isActive: true,
                 author: {
-                    id: 1,
+                    id: 2,
                     username: 'User'
                 },
                 members: [],
