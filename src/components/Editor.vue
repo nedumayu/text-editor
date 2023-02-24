@@ -14,15 +14,17 @@ import StarterKit from '@tiptap/starter-kit'
 // import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 // import {WebrtcProvider} from 'y-webrtc'
 // import * as Y from "yjs"
+// import { HocuspocusProvider } from '@hocuspocus/provider'
 import {onBeforeUnmount, onUpdated, onMounted} from "vue";
 import {useBoardStore} from "../stores/BoardStore.js";
-// import { HocuspocusProvider } from '@hocuspocus/provider'
 import MenuBar from './MenuBar.vue'
 import {Highlight} from "@tiptap/extension-highlight";
 import {TaskItem} from "@tiptap/extension-task-item";
 import TaskList from '@tiptap/extension-task-list';
+import {useUserStore} from "../stores/UserStore.js";
 
 const boardStore = useBoardStore()
+const userStore = useUserStore();
 
 const props = defineProps({
   board: {
@@ -72,6 +74,8 @@ const editor = new Editor({
     //   },
     // }),
   ],
+  editable: !!(props.board.members.forEach(member => member.id === userStore.currentUser.id)
+      || props.board.author.id === userStore.currentUser.id),
 });
 
 editor.commands.focus('end')
