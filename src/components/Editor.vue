@@ -1,8 +1,14 @@
 <template>
   <div>
     <div v-if="editor" class="editor">
-      <MenuBar class="editor__header" :editor="editor" />
+      <MenuBar class="editor__header" :editor="editor"/>
       <EditorContent class="editor__content" :editor="editor" v-focus/>
+      <div v-if="!!(props.board.members.forEach(member => member.id === userStore.currentUser.id)
+      || props.board.author.id === userStore.currentUser.id)" class="editor__footer">
+        <Input v-model="commit" placeholder="Enter your message" class="commit"/>
+        <Button class="commit-button" @click="commitChanges">Commit</Button>
+        {{message}}
+      </div>
     </div>
   </div>
 </template>
@@ -10,21 +16,20 @@
 <script setup>
 import {Editor, EditorContent} from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-// import Collaboration from '@tiptap/extension-collaboration'
-// import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-// import {WebrtcProvider} from 'y-webrtc'
-// import * as Y from "yjs"
-// import { HocuspocusProvider } from '@hocuspocus/provider'
-import {onBeforeUnmount, onUpdated, onMounted} from "vue";
+import {onBeforeUnmount, ref} from "vue";
 import {useBoardStore} from "../stores/BoardStore.js";
 import MenuBar from './MenuBar.vue'
 import {Highlight} from "@tiptap/extension-highlight";
 import {TaskItem} from "@tiptap/extension-task-item";
 import TaskList from '@tiptap/extension-task-list';
 import {useUserStore} from "../stores/UserStore.js";
+import {useChangesStore} from "../stores/ChangesStore";
 
-const boardStore = useBoardStore()
+const boardStore = useBoardStore();
 const userStore = useUserStore();
+const changesStore = useChangesStore();
+
+const wasEdit = ref(false);
 
 const props = defineProps({
   board: {
@@ -35,44 +40,23 @@ const props = defineProps({
   }
 })
 
-// const ydoc = new Y.Doc()
-// const provider = new HocuspocusProvider({
-//   url: 'ws://127.0.0.1:1234',
-//   name: 'text-editor',
-//   document: ydoc,
-// })
-
-// const ydoc = new Y.Doc();
-// const provider = new WebrtcProvider(
-//     "text-editor",
-//     ydoc,
-//     { signaling: ['ws://localhost:5173'] }
-// );
+const commit = ref('');
+const message = ref('');
+let isCommited = false;
 
 const editor = new Editor({
   content: props.board.content,
-  onUpdate: ({ editor }) => {
+  onUpdate: ({editor}) => {
+    wasEdit.value = true;
     const json = editor.getJSON();
     props.board.content = json;
   },
   extensions: [
-    StarterKit.configure({
-      //history: false,
-    }),
+    StarterKit.configure({}),
     Highlight,
     TaskList,
     TaskItem,
 
-    // Collaboration.configure({
-    //   document: provider.document,
-    // }),
-    // CollaborationCursor.configure({
-    //   provider: provider,
-    //   user: {
-    //     name: 'Cyndi Lauper',
-    //     color: '#f783ac',
-    //   },
-    // }),
   ],
   editable: !!(props.board.members.forEach(member => member.id === userStore.currentUser.id)
       || props.board.author.id === userStore.currentUser.id),
@@ -81,18 +65,61 @@ const editor = new Editor({
 editor.commands.focus('end')
 
 onBeforeUnmount(() => {
-  //provider.destroy();
   editor.destroy();
+
+  if (wasEdit.value && !isCommited) {
+    const newChange = {
+      id: Date.now(),
+      boardId: props.board.id,
+      user: {
+        id: userStore.currentUser.id,
+        username: userStore.currentUser.username
+      },
+      date: new Date(),
+      content: commit.value || 'Добавлено новое изменение',
+    }
+    changesStore.addChange(newChange);
+  }
 })
+
+const commitChanges = () => {
+  if (!wasEdit.value) {
+    message.value = 'Ничего не изменено';
+  } else {
+    const newChange = {
+      id: Date.now(),
+      boardId: props.board.id,
+      user: {
+        id: userStore.currentUser.id,
+        username: userStore.currentUser.username
+      },
+      date: new Date(),
+      content: commit.value || 'Добавлено новое изменение',
+    }
+    changesStore.addChange(newChange);
+    isCommited = true;
+    message.value = 'Изменение прошло успешно!'
+    commit.value = '';
+  }
+}
+
 </script>
 
 
-
 <style scoped>
+.commit {
+  border-radius: 20px;
+  width: 200px;
+}
+
+.commit-button {
+  margin-left: 10px;
+  border-radius: 20px;
+}
+
 .editor {
   display: flex;
   flex-direction: column;
-
   color: #0D0D0D;
   background-color: #FFF;
   border: 3px solid #0D0D0D;
@@ -115,41 +142,14 @@ onBeforeUnmount(() => {
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /*min-height: 71vh;*/
 }
 
-
+.editor__footer {
+  margin: 0 0 10px 10px;
+}
 </style>
 
 <style lang="scss">
-/* Give a remote user a caret */
-.collaboration-cursor__caret {
-  position: relative;
-  margin-left: -1px;
-  margin-right: -1px;
-  border-left: 1px solid #0D0D0D;
-  border-right: 1px solid #0D0D0D;
-  word-break: normal;
-  pointer-events: none;
-}
-
-/* Render the username above the caret */
-.collaboration-cursor__label {
-  position: absolute;
-  top: -1.4em;
-  left: -1px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  user-select: none;
-  color: #0D0D0D;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px 3px 3px 0;
-  white-space: nowrap;
-}
-
-/* Basic editor styles */
 .ProseMirror {
   > * + * {
     margin-top: 0.75em;

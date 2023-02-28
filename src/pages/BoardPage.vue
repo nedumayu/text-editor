@@ -2,7 +2,7 @@
   <div class="board">
     <Editor :board="board"/>
     <div class="board-info">
-      <h2>Доска #{{ board.id }}</h2>
+      <h1>Доска #{{ board.id }}</h1>
       <div>
         Название: {{ board.title }}
       </div>
@@ -14,14 +14,24 @@
         Автор: {{ board.author.username }}
       </div>
       <div v-if="board.members.length > 0">
-        <h4>Участники: </h4>
+        <h3>Участники:</h3>
         <div class="board-members">
           <div class="board-member" v-for="member of board.members" :key="member.id">
             {{ member.username }}
           </div>
         </div>
       </div>
-      <div v-else></div>
+      <div>
+        <h3>Изменения:</h3>
+        <div v-for="change in changesStore.changes.filter(c => c.boardId === board.id).sort((a, b) => b.date - a.date)" :key="change.id" class="changes-item">
+          <strong class="change-user">{{  change.user.username  }}</strong>
+          <div class="change-date">
+            {{  change.date.getDate()  }}.{{  change.date.getMonth() + 1 }}.{{  change.date.getFullYear()  }}
+            {{  change.date.getHours()  }}:{{  change.date.getMinutes()  }}:{{  change.date.getSeconds()  }}
+          </div>
+          <div class="change-content">{{  change.content  }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,11 +40,18 @@
 import {useBoardStore} from "../stores/BoardStore.js";
 import Editor from "../components/Editor.vue";
 import {useRoute} from 'vue-router'
+import {useChangesStore} from "../stores/ChangesStore";
+import {useUserStore} from "../stores/UserStore";
 
 const boardStore = useBoardStore();
+const changesStore = useChangesStore();
+const userStore = useUserStore();
+
 const route = useRoute();
 
 const board = boardStore.boards.find(b => b.id === Number(route.params.id));
+//const changes = changesStore.changes.filter(c => c.boardId === board.id).sort((a, b) => b.date - a.date);
+
 </script>
 
 <style scoped>
@@ -62,5 +79,26 @@ const board = boardStore.boards.find(b => b.id === Number(route.params.id));
   margin-right: 5px;
   border-radius: 10px;
   cursor: default;
+}
+.changes-item {
+  display: flex;
+}
+
+.change-user, .change-date {
+  margin-right: 20px;
+}
+
+.change-content {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 200px;
+  text-overflow: ellipsis;
+}
+
+.change-content:hover {
+  overflow: inherit;
+  text-overflow: inherit;
+  white-space: inherit;
+  height: auto;
 }
 </style>

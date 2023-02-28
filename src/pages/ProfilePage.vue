@@ -40,10 +40,6 @@ const userBoards = [];
 for (let i = 0; i < userStore.currentUser.boards.length; i++) {
   userBoards.push(boardStore.boards.find(board => board.id === userStore.currentUser.boards[i]));
 }
-
-console.log(userBoards);
-console.log(userStore.currentUser.boards);
-console.log(boardStore);
 const router = useRouter();
 
 const logout = () => {
@@ -74,7 +70,7 @@ const logout = () => {
 .profile-avatar {
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 20%;
   border: 1px solid black;
   margin-bottom: 10px;
 }

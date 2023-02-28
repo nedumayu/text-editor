@@ -39,11 +39,7 @@ const login = () => {
         boards: userStore.users.find(user => user.email === email.value).boards,
       }
       userStore.isAuth = true;
-      showMessage('Вы вошли!')
-      setTimeout(() => {
-        router.push('/profile');
-      }, 1000);
-
+      router.push('/profile');
     } else {
       showMessage('Неверный пароль!')
     }

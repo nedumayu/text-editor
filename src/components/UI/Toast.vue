@@ -19,7 +19,7 @@ export default {
 <style scoped>
 .toast {
   position: fixed;
-  top: 20px;
+  top: 70px;
   right: 0;
   width: 200px;
   background: rgba(13, 13, 13, 0.87);
