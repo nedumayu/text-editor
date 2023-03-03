@@ -1,11 +1,11 @@
 <template>
   <div>
     <form class="register-form">
-      <h1>Регистрация</h1>
-      <Input class="login-input" v-model="username" :type="textType" placeholder="Имя пользователя"/>
+      <h1>Welcome aboard</h1>
+      <Input class="login-input" v-model="username" :type="textType" placeholder="Username"/>
       <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
-      <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
-      <Button @click="createUser">Зарегистрироваться</Button>
+      <Input class="login-input" v-model="password" :type="passType" placeholder="Password"/>
+      <Button @click="createUser">Sign up</Button>
     </form>
     <Toast :show="messageVisible">
       Вы зарегистрированы!
@@ -50,8 +50,14 @@ const createUser = () => {
 <style scoped>
 .register-form {
   width: 350px;
-  margin: auto;
+  margin: 50px auto;
   display: flex;
   flex-direction: column;
+}
+
+.register-form h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: lighter;
 }
 </style>

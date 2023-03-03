@@ -1,10 +1,10 @@
 <template>
   <div>
     <form class="register-form">
-      <h1>Вход в приложение</h1>
+      <h1>Sign in to TextEditor</h1>
       <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
-      <Input class="login-input" v-model="password" :type="passType" placeholder="Пароль"/>
-      <Button @click="login">Войти</Button>
+      <Input class="login-input" v-model="password" :type="passType" placeholder="Password"/>
+      <Button @click="login">Sign in</Button>
     </form>
     <Toast :show="messageVisible">
       {{ message }}
@@ -60,8 +60,14 @@ const showMessage = (msg) => {
 <style scoped>
 .register-form {
   width: 350px;
-  margin: auto;
+  margin: 50px auto;
   display: flex;
   flex-direction: column;
+}
+
+.register-form h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: lighter;
 }
 </style>

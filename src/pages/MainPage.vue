@@ -1,5 +1,5 @@
 <template>
-  <h1>Hello everyone on our board!</h1>
+  <div>Hello everyone on our board!</div>
 </template>
 
 <script setup>
