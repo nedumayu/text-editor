@@ -1,36 +1,57 @@
 <template>
   <div class="board">
     <Editor :board="board"/>
+
     <div class="board-info">
-      <h1>Доска #{{ board.id }}</h1>
-      <div>
-        Название: {{ board.title }}
-      </div>
-      <div>
-        Дата: {{ board.date.getDate() }}.{{ board.date.getMonth() + 1 }}.{{ board.date.getFullYear() }}
-        {{ board.date.getHours() }}:{{ board.date.getMinutes() }}:{{ board.date.getSeconds() }}
-      </div>
-      <div>
-        Автор: {{ board.author.username }}
-      </div>
-      <div v-if="board.members.length > 0">
-        <h3>Участники:</h3>
-        <div class="board-members">
-          <div class="board-member" v-for="member of board.members" :key="member.id">
-            {{ member.username }}
-          </div>
+      <div class="board-header">
+        <h1>BOARD #{{ board.id }}</h1>
+        <div
+            class="board-buttons"
+            v-if="condition"
+        >
+          <button class="menu-item" @click="isEdit = true" title="Edit board">
+            <svg class="remix">
+              <use :xlink:href="`${remixiconUrl}#ri-pencil-line`"/>
+            </svg>
+          </button>
+          <button class="menu-item" @click="deleteBoard" title="Delete board">
+            <svg class="remix">
+              <use :xlink:href="`${remixiconUrl}#ri-delete-bin-line`"/>
+            </svg>
+          </button>
         </div>
       </div>
-      <div>
-        <h3>Изменения:</h3>
-        <div v-for="change in changesStore.changes.filter(c => c.boardId === board.id).sort((a, b) => b.date - a.date)" :key="change.id" class="changes-item">
-          <strong class="change-user">{{  change.user.username  }}</strong>
-          <div class="change-date">
-            {{  change.date.getDate()  }}.{{  change.date.getMonth() + 1 }}.{{  change.date.getFullYear()  }}
-            {{  change.date.getHours()  }}:{{  change.date.getMinutes()  }}:{{  change.date.getSeconds()  }}
-          </div>
-          <div class="change-content">{{  change.content  }}</div>
+
+      <div v-if="isEdit">
+        <Label>title</Label>
+        <Input v-model="title" v-focus style="margin-bottom: 20px"/>
+
+        <Label>members</Label>
+        <EditBoardMembers
+            :members="members"
+            :board-members="boardMembers"
+            @setMembers="setMembers"
+        />
+
+        <div class="profile-menu">
+          <Button @click="saveEdit" style="margin-right: 10px">Save</Button>
+          <Button @click="cancel">Cancel</Button>
         </div>
+      </div>
+
+      <div v-else>
+        <h3 style="margin-bottom: 20px">
+          {{ board.title }}
+        </h3>
+        <div>
+          Author: {{ board.author.username }}
+        </div>
+        <div class="board-date">
+          {{ board.date.getDate() }}.{{ board.date.getMonth() + 1 }}.{{ board.date.getFullYear() }}
+          {{ board.date.getHours() }}:{{ board.date.getMinutes() }}:{{ board.date.getSeconds() }}
+        </div>
+        <BoardMembers :members="board.members" v-if="board.members.length > 0"/>
+        <Commits :board="board" v-if="changesStore.changes.filter(c => c.boardId === board.id).length > 0"/>
       </div>
     </div>
   </div>
@@ -39,19 +60,62 @@
 <script setup>
 import {useBoardStore} from "../stores/BoardStore.js";
 import Editor from "../components/Editor.vue";
-import {useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import {useChangesStore} from "../stores/ChangesStore";
 import {useUserStore} from "../stores/UserStore";
+import remixiconUrl from 'remixicon/fonts/remixicon.symbol.svg'
+import {ref} from "vue";
+import BoardMembers from "../components/BoardMembers.vue";
+import Commits from "../components/Commits.vue";
+import EditBoardMembers from "../components/EditBoardMembers.vue";
 
 const boardStore = useBoardStore();
 const changesStore = useChangesStore();
 const userStore = useUserStore();
 
 const route = useRoute();
-
+const router = useRouter();
 const board = boardStore.boards.find(b => b.id === Number(route.params.id));
-//const changes = changesStore.changes.filter(c => c.boardId === board.id).sort((a, b) => b.date - a.date);
 
+const isEdit = ref(false);
+const condition = !!(board.members.some(member => member.id === userStore.currentUser.id) || board.author.id === userStore.currentUser.id);
+
+const title = ref(board.title);
+
+const boardMembers = ref(board.members);
+
+const members = ref(userStore.users.filter(member => member.id !== userStore.currentUser.id));
+boardMembers.value.forEach(b => {
+  members.value = members.value.filter(member => member.id !== b.id)
+})
+
+const setMembers = ([m, b]) => {
+  members.value = m;
+  boardMembers.value = b;
+}
+
+const deleteBoard = () => {
+  boardStore.boards = boardStore.boards.filter(b => b.id !== board.id);
+  const user = userStore.users.find(user => user.id === userStore.currentUser.id);
+  user.boards =  user.boards.filter(b => b !== board.id);
+  userStore.currentUser.boards = userStore.users.find(user => user.id === userStore.currentUser.id).boards;
+  router.push('/boards');
+}
+
+const saveEdit = () => {
+  board.title = title.value;
+  board.members = boardMembers.value;
+  isEdit.value = false;
+}
+
+const cancel = () => {
+  boardMembers.value = board.members;
+  members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
+  boardMembers.value.forEach(b => {
+    members.value = members.value.filter(member => member.id !== b.id)
+  })
+  isEdit.value = false;
+}
 </script>
 
 <style scoped>
@@ -59,6 +123,44 @@ const board = boardStore.boards.find(b => b.id === Number(route.params.id));
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board-header h1 {
+  margin-bottom: 20px;
+  max-width: 300px
+}
+
+.board-buttons {
+  display: flex;
+}
+
+.menu-item {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: #0D0D0D;
+  border: 1px solid black;
+  background-color: transparent;
+  border-radius: 0.4rem;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+  cursor: pointer;
+}
+
+.menu-item svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.menu-item:hover {
+  color: #FFF;
+  background-color: #0D0D0D;
 }
 
 .board-info {
@@ -69,36 +171,12 @@ const board = boardStore.boards.find(b => b.id === Number(route.params.id));
   border-radius: 0.75rem;
 }
 
-.board-members {
+.profile-menu {
   display: flex;
 }
 
-.board-member {
-  background: rgba(215, 215, 215, 0.4);
-  padding: 5px;
-  margin-right: 5px;
-  border-radius: 10px;
-  cursor: default;
-}
-.changes-item {
-  display: flex;
+.board-date {
+  color: rgba(0, 0, 0, 0.43);
 }
 
-.change-user, .change-date {
-  margin-right: 20px;
-}
-
-.change-content {
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 200px;
-  text-overflow: ellipsis;
-}
-
-.change-content:hover {
-  overflow: inherit;
-  text-overflow: inherit;
-  white-space: inherit;
-  height: auto;
-}
 </style>

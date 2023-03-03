@@ -1,7 +1,7 @@
 <template>
   <Button
       v-if="userStore.isAuth"
-      @click="showModal"
+      @click="modalVisible = true"
       class="new-board-button"
   >
     New Board
@@ -10,40 +10,19 @@
 
   <Modal v-model:show="modalVisible">
     <div class="new-board-form">
-      <h1>Create new board!</h1>
+      <h1 class="modal-title">Create new board!</h1>
       <Input
           v-model="title"
           placeholder="Название"
+          class="search-input"
           v-focus
       />
       <h3>Участники:</h3>
-
-      <div class="members-list">
-        <div class="members-item" v-for="member of boardMembers" :key="member.id">
-          <div style="margin-right: 10px">{{member.username}}</div>
-          <div class="delete-member" @click="deleteMember(member.id)">х</div>
-        </div>
-      </div>
-
-      <Input v-model="searchQuery"
-             class="search-input"
-             placeholder="Начните вводить имя пользователя..."
+      <EditBoardMembers
+          :members="members"
+          :board-members="boardMembers"
+          @setMembers="setMembers"
       />
-      <div class="board-members">
-        <div
-            class="board-members-item"
-            v-for="user of searchedElements"
-            :key="user.id"
-            @click="addMemberToBoard(user.id)"
-        >
-          <div>
-            {{user.username}}
-          </div>
-          <div>
-            {{user.email}}
-          </div>
-        </div>
-      </div>
       <Button @click="createBoard">Create</Button>
     </div>
   </Modal>
@@ -56,31 +35,23 @@
 import {ref} from "vue";
 import {useUserStore} from "../stores/UserStore.js";
 import {useBoardStore} from "../stores/BoardStore.js";
-import {useSearching} from "../hooks/useSearching.js";
+import EditBoardMembers from "./EditBoardMembers.vue";
 
 const boardStore = useBoardStore();
 const userStore = useUserStore();
 
 const title = ref('');
-const boardMembers = ref([]);
 
 const modalVisible = ref(false);
 const messageVisible = ref(false);
 
-const showModal = () => {
-  modalVisible.value = true;
-}
-
 const members = ref(userStore.users.filter(member => member.id !== userStore.currentUser.id));
-const addMemberToBoard = (id) => {
-  const user = userStore.users.find(user => user.id === id);
-  boardMembers.value.push({
-    id: user.id,
-    username: user.username
-  });
-  members.value = members.value.filter(member => member.id !== id);
+const boardMembers = ref([]);
+
+const setMembers = ([m, b]) => {
+  members.value = m;
+  boardMembers.value = b;
 }
-const {searchQuery, searchedElements} = useSearching(members, 'username');
 
 const createBoard = () => {
   const newBoard = {
@@ -116,19 +87,13 @@ const createBoard = () => {
   }, 2000);
 }
 
-const deleteMember = (id) => {
-  boardMembers.value = boardMembers.value.filter(member => member.id !== id);
-  members.value.push({
-    id: id,
-    username: userStore.users.find(user => user.id === id).username
-  });
-}
-
 </script>
 
 <style scoped>
 .new-board-button {
   margin-left: auto;
+  min-width: 130px;
+  height: 40px;
 }
 
 .new-board-form {
@@ -137,57 +102,15 @@ const deleteMember = (id) => {
   flex-direction: column;
 }
 
-.board-members {
-  height: 70px;
-  border: 1px solid black;
-  border-top: none;
-  margin-bottom: 30px;
-  overflow: hidden;
-  overflow-y: scroll;
-  padding: 3px;
-}
-
-.board-members-item {
-  border-bottom: 1px solid gray;
-  height: 20px;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-
-}
-
-.board-members-item:hover {
-  background: #e5f0ff;
-  cursor: pointer;
-}
-
-.members-list {
-  display: flex;
+.new-board-form h3 {
   margin-bottom: 10px;
 }
 
-.members-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid black;
-  padding: 5px;
-  border-radius: 15px;
-  margin-right: 5px;
+.modal-title {
+  margin-bottom: 20px;
 }
 
-.delete-member {
-  width: 15px;
-  height: 15px;
-  border: 1px solid black;
-  text-align: center;
-  padding: 0 2px 5px 3px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.delete-member:hover {
-  color: white;
-  background: black;
+.search-input {
+  margin-bottom: 20px;
 }
 </style>

@@ -3,27 +3,23 @@
     <h3 class="board-title">
       {{ board.title }}
     </h3>
+    <div class="board-author">
+      Created by
+      <strong>{{ board.author.username }}</strong>
+    </div>
     <div class="board-date">
       {{ board.date.getDate() }}.{{ board.date.getMonth() + 1 }}.{{ board.date.getFullYear() }}
-      {{ board.date.getHours() }}:{{ board.date.getMinutes() }}:{{ board.date.getSeconds() }}
+      {{ board.date.getHours() }}:{{ board.date.getMinutes() }}
     </div>
-    <div class="board-author">
-      Created by {{ board.author.username }}
-    </div>
-    <div v-if="board.members.length > 0">
-      <h4>Участники: </h4>
-      <div class="board-members">
-        <div class="board-member" v-for="member of board.members" :key="member.id">
-          {{ member.username }}
-        </div>
-      </div>
-    </div>
+    <BoardMembers :members="board.members" v-if="board.members.length > 0"/>
     <div v-else></div>
     <Button class="board-button" @click="$router.push(`/board/${board.id}`)">go to board</Button>
   </div>
 </template>
 
 <script setup>
+import BoardMembers from "./BoardMembers.vue";
+
 const props = defineProps({
   board: {
     type: Object,
@@ -52,15 +48,11 @@ const props = defineProps({
   margin-top: auto;
 }
 
-.board-members {
-  display: flex;
+.board-title {
+  margin-bottom: 20px;
 }
 
-.board-member {
-  background: rgba(215, 215, 215, 0.4);
-  padding: 5px;
-  margin-right: 5px;
-  border-radius: 10px;
-  cursor: default;
+.board-date {
+  color: rgba(0, 0, 0, 0.43);
 }
 </style>
