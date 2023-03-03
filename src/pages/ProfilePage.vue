@@ -1,23 +1,54 @@
 <template>
   <div class="profile">
     <div class="profile-content">
-      <div class="profile-menu">
-        <Button style="margin-bottom: 10px">Edit info</Button>
-        <Button @click="logout">Log out</Button>
-      </div>
-      <div class="profile-info">
-        <div>
-          <img src="../../public/profile-Icon.png" class="profile-avatar"/>
+      <div v-if="isEdit">
+        <div class="profile-info">
+          <div>
+            <img src="../components/assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
+          </div>
+          <Label>username</Label>
+          <Input class="edit-input" v-model="username" v-focus/>
+          <Label>e-mail</Label>
+          <Input class="edit-input" v-model="email"/>
         </div>
-        <div>Username: {{ userStore.currentUser.username }}</div>
-        <div>E-mail: {{ userStore.currentUser.email }}</div>
+        <div class="profile-menu">
+          <Button @click="saveEdit" style="margin-bottom: 10px">Save</Button>
+          <Button @click="isEdit = false">Cancel</Button>
+        </div>
+      </div>
+
+      <div v-else>
+        <div class="profile-info">
+          <div>
+            <img src="../components/assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
+          </div>
+          <h3>{{ userStore.currentUser.username }}</h3>
+          <div>{{ userStore.currentUser.email }}</div>
+        </div>
+        <div class="profile-menu">
+          <Button @click="isEdit = true" style="margin-bottom: 10px">Edit info</Button>
+          <Button @click="logout">Log out</Button>
+        </div>
       </div>
     </div>
-    <div v-if="userBoards.length > 0">
-      <h2>Доски:</h2>
+
+    <div v-if="userStore.currentUserBoards.length > 0">
+      <div class="boards-container">
+        <div class="boards-header">
+          <Input
+              v-model="searchQuery"
+              class="search-input"
+              placeholder="Search..."
+          />
+          <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
+          <Sort :boards="userStore.currentUserBoards"/>
+          <Filter :boards="userStore.currentUserBoards" @on-change-filter="setFilteredElements"/>
+        </div>
+        <AddBoardModal/>
+      </div>
       <div class="profile-boards">
         <Board
-            v-for="board of userBoards"
+            v-for="board of searchedElements"
             :key="board.id"
             :board="board"
         />
@@ -32,15 +63,44 @@ import {useRouter} from "vue-router";
 import Button from "../components/UI/Button.vue";
 import Board from "../components/Board.vue";
 import {useBoardStore} from "../stores/BoardStore.js";
+import {ref} from "vue";
+import Sort from "../components/Sort.vue";
+import Filter from "../components/Filter.vue";
+import AddBoardModal from "../components/AddBoardModal.vue";
+import {useSearching} from "../hooks/useSearching.js";
+
 
 const userStore = useUserStore();
 const boardStore = useBoardStore();
-
-const userBoards = [];
-for (let i = 0; i < userStore.currentUser.boards.length; i++) {
-  userBoards.push(boardStore.boards.find(board => board.id === userStore.currentUser.boards[i]));
-}
 const router = useRouter();
+
+const isEdit = ref(false);
+
+userStore.currentUserBoards = [];
+
+userStore.currentUser.boards.forEach(userBoard => {
+  userStore.currentUserBoards.push(boardStore.boards.find(board => board.id === userBoard));
+});
+
+const filteredElements = ref(userStore.currentUserBoards)
+const setFilteredElements = (f) => {
+  filteredElements.value = f;
+}
+const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
+
+const username = ref(userStore.currentUser.username);
+const email = ref(userStore.currentUser.email);
+
+const saveEdit = () => {
+  userStore.currentUser.username = username.value;
+  userStore.currentUser.email = email.value;
+
+  const user = userStore.users.find(user => user.id === userStore.currentUser.id);
+  user.username = username.value;
+  user.email = email.value;
+
+  isEdit.value = false;
+}
 
 const logout = () => {
   userStore.isAuth = false;
@@ -52,30 +112,62 @@ const logout = () => {
 <style scoped>
 .profile {
   padding: 20px 40px;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 100px;
 }
 
 .profile-content {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-info {
+  margin-bottom: 20px;
+}
+
+.profile-info h3 {
+  margin-bottom: 10px;
 }
 
 .profile-menu {
   display: flex;
   flex-direction: column;
-  padding: 0 50px 0 0;
-  border-right: 1px solid black;
 }
 
 .profile-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 20%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
   border: 1px solid black;
   margin-bottom: 10px;
 }
 
 .profile-boards {
   display: flex;
+}
+
+.edit-input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
+
+.boards-header {
+  display: flex;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  width: 270px;
+  margin-right: 20px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.boards-container {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
