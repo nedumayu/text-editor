@@ -1,29 +1,17 @@
 <template>
   <div>
-    <div class="board-header">
-      <Input
-          v-model="searchQuery"
-          class="search-input"
-          placeholder="Поиск..."
-      />
-      <Select
-        v-model="selectedSort"
-        :options="sortOptions"
-      />
-
-      <div class="board-filters">
-        <div class="filter-item">
-          <input type="checkbox" id="active" name="active" v-model="activeChecked">
-          <label for="active">Active</label>
-        </div>
-        <div class="filter-item">
-          <input type="checkbox" id="finished" name="finished" v-model="finishedChecked">
-          <label for="finished">Finished</label>
-        </div>
+    <div class="boards-container">
+      <div class="boards-header">
+        <Input
+            v-model="searchQuery"
+            class="search-input"
+            placeholder="Search..."
+        />
+        <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
+        <Sort :boards="boardStore.boards"/>
+        <Filter :boards="boardStore.boards" @on-change-filter="setFilteredElements"/>
       </div>
-
       <AddBoardModal/>
-
     </div>
 
     <div class="board-items">
@@ -39,23 +27,24 @@
 <script setup>
 import Board from '../components/Board.vue'
 import {useBoardStore} from "../stores/BoardStore.js";
-import {useUserStore} from "../stores/UserStore";
-import {useSorting} from "../hooks/useSorting.js";
-import {useFiltering} from "../hooks/useFiltering.js";
 import {useSearching} from "../hooks/useSearching.js";
 import AddBoardModal from "../components/AddBoardModal.vue";
+import Sort from "../components/Sort.vue";
+import Filter from "../components/Filter.vue";
+import {ref} from "vue";
+import Search from "../components/Search.vue";
 
 const boardStore = useBoardStore()
-const userStore = useUserStore();
 
-const sortOptions = [
-  {value: 'title', name: 'Title'},
-  {value: 'dateUp', name: 'New first'},
-  {value: 'dateDown', name: 'Old first'},
-];
+const filteredElements = ref(boardStore.boards)
+const setFilteredElements = (f) => {
+  filteredElements.value = f;
+}
 
-const {selectedSort} = useSorting(boardStore.boards);
-const {activeChecked, finishedChecked, filteredElements} = useFiltering(boardStore.boards);
+// const searchedElements = ref(boardStore.boards)
+// const setSearch = (s) => {
+//   searchedElements.value = s;
+// }
 const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
 
 </script>
@@ -66,25 +55,21 @@ const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
   flex-wrap: wrap;
 }
 
-.board-header {
+.boards-header {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .search-input {
   width: 270px;
   margin-right: 20px;
-  height: 20px;
+  height: 40px;
+  margin-bottom: 10px;
 }
 
-.board-filters {
+.boards-container {
   display: flex;
-  width: 300px;
-  align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-}
-
-.filter-item {
-  margin-left: 20px;
+  justify-content: space-between;
 }
 </style>
