@@ -2,7 +2,6 @@
 
 body {
     margin: 0;
-    background: #f9f9f9;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
 }
@@ -18,4 +17,8 @@ main {
 
 .login-input {
     margin-bottom: 15px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
 }
