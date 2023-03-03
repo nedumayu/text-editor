@@ -3,7 +3,7 @@
     <div v-if="editor" class="editor">
       <MenuBar class="editor__header" :editor="editor"/>
       <EditorContent class="editor__content" :editor="editor" v-focus/>
-      <div v-if="!!(props.board.members.forEach(member => member.id === userStore.currentUser.id)
+      <div v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
       || props.board.author.id === userStore.currentUser.id)" class="editor__footer">
         <Input v-model="commit" placeholder="Enter your message" class="commit"/>
         <Button class="commit-button" @click="commitChanges">Commit</Button>
@@ -29,8 +29,6 @@ const boardStore = useBoardStore();
 const userStore = useUserStore();
 const changesStore = useChangesStore();
 
-const wasEdit = ref(false);
-
 const props = defineProps({
   board: {
     type: Object,
@@ -42,6 +40,8 @@ const props = defineProps({
 
 const commit = ref('');
 const message = ref('');
+
+const wasEdit = ref(false);
 let isCommited = false;
 
 const editor = new Editor({
@@ -58,7 +58,7 @@ const editor = new Editor({
     TaskItem,
 
   ],
-  editable: !!(props.board.members.forEach(member => member.id === userStore.currentUser.id)
+  editable: !!(props.board.members.some(member => member.id === userStore.currentUser.id)
       || props.board.author.id === userStore.currentUser.id),
 });
 
