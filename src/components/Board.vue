@@ -34,7 +34,7 @@ const props = defineProps({
 .board {
   margin-right: 20px;
   width: 260px;
-  height: 260px;
+  min-height: 260px;
   border: 1px solid black;
   padding: 20px;
   display: flex;

@@ -24,7 +24,7 @@ import Navbar from "./components/Navbar.vue";
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s ease-out;
 }
-.fade-enter-from, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+.fade-enter-from, .fade-leave-to  {
   opacity: 0;
 }
 </style>

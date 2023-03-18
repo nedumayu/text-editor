@@ -7,7 +7,7 @@
         <h1>BOARD #{{ board.id }}</h1>
         <div
             class="board-buttons"
-            v-if="condition"
+            v-if="board.author.id === userStore.currentUser.id"
         >
           <button class="menu-item" @click="isEdit = true" title="Edit board">
             <svg class="remix">
@@ -25,6 +25,18 @@
       <div v-if="isEdit">
         <Label>title</Label>
         <Input v-model="title" v-focus style="margin-bottom: 20px"/>
+
+        <Label>status</Label>
+        <div class="edit-status">
+          <div class="status-item">
+            <input type="radio" id="active" v-model="isActive" :value="true">
+            <label for="active">Active</label>
+          </div>
+          <div class="status-item">
+            <input type="radio" id="finished" v-model="isActive" :value="false">
+            <label for="finished">Finished</label>
+          </div>
+        </div>
 
         <Label>members</Label>
         <EditBoardMembers
@@ -78,9 +90,9 @@ const router = useRouter();
 const board = boardStore.boards.find(b => b.id === Number(route.params.id));
 
 const isEdit = ref(false);
-const condition = !!(board.members.some(member => member.id === userStore.currentUser.id) || board.author.id === userStore.currentUser.id);
 
 const title = ref(board.title);
+const isActive = ref(board.isActive);
 
 const boardMembers = ref(board.members);
 
@@ -99,16 +111,19 @@ const deleteBoard = () => {
   const user = userStore.users.find(user => user.id === userStore.currentUser.id);
   user.boards =  user.boards.filter(b => b !== board.id);
   userStore.currentUser.boards = userStore.users.find(user => user.id === userStore.currentUser.id).boards;
-  router.push('/boards');
+  router.go(-1);
 }
 
 const saveEdit = () => {
   board.title = title.value;
   board.members = boardMembers.value;
+  board.isActive = isActive.value;
   isEdit.value = false;
 }
 
 const cancel = () => {
+  title.value = board.title;
+  isActive.value = board.isActive;
   boardMembers.value = board.members;
   members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
   boardMembers.value.forEach(b => {
@@ -116,6 +131,7 @@ const cancel = () => {
   })
   isEdit.value = false;
 }
+
 </script>
 
 <style scoped>
@@ -179,4 +195,12 @@ const cancel = () => {
   color: rgba(0, 0, 0, 0.43);
 }
 
+.edit-status {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.status-item {
+  margin-right: 10px;
+}
 </style>

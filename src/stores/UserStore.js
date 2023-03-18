@@ -8,14 +8,35 @@ export const useUserStore = defineStore('userStore', () => {
             username: 'Alice',
             email: '123',
             password: '123',
-            boards: [0]
+            boards: [0, 2, 4]
         },
         {
             id: 2,
             username: 'User',
             email: 'user@gmail.com',
             password: '123',
-            boards: [0, 1]
+            boards: [0, 1, 2, 4]
+        },
+        {
+            id: 3,
+            username: 'Antonette',
+            email: 'anthonetta@gmail.com',
+            password: '123',
+            boards: [2, 4]
+        },
+        {
+            id: 4,
+            username: 'Bret',
+            email: 'sincere@april.biz',
+            password: '123',
+            boards: [2]
+        },
+        {
+            id: 5,
+            username: 'Karianne',
+            email: 'ulianne.OConner@kory.org',
+            password: '123',
+            boards: [3]
         }
     ]);
 

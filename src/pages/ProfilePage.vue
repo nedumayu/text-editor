@@ -4,7 +4,7 @@
       <div v-if="isEdit">
         <div class="profile-info">
           <div>
-            <img src="../components/assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
+            <img src="../assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
           </div>
           <Label>username</Label>
           <Input class="edit-input" v-model="username" v-focus/>
@@ -20,7 +20,7 @@
       <div v-else>
         <div class="profile-info">
           <div>
-            <img src="../components/assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
+            <img src="../assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
           </div>
           <h3>{{ userStore.currentUser.username }}</h3>
           <div>{{ userStore.currentUser.email }}</div>
@@ -53,6 +53,9 @@
             :board="board"
         />
       </div>
+    </div>
+    <div v-else>
+      <AddBoardModal/>
     </div>
   </div>
 </template>
@@ -145,6 +148,7 @@ const logout = () => {
 
 .profile-boards {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .edit-input {

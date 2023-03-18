@@ -1,14 +1,14 @@
 <template>
   <div class="navbar">
     <div @click="$router.push('/')" class="logo">
-      Text Editor
+      [Text Editor]
     </div>
     <div class="navbar-buttons">
       <router-link to="/boards" class="menu-item">Boards</router-link>
       <router-link to="/profile" class="menu-item" v-if="userStore.isAuth">Profile</router-link>
       <div v-else>
-        <router-link to="/register" class="menu-item">Register</router-link>
-        <router-link to="/login">Login</router-link>
+        <router-link to="/register" class="menu-item">Sign up</router-link>
+        <router-link to="/login">Sign in</router-link>
       </div>
     </div>
   </div>

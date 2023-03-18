@@ -24,12 +24,14 @@ const props = defineProps({
 .board-members {
   display: flex;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .board-member {
   background: rgba(215, 215, 215, 0.4);
   padding: 5px 10px;
   margin-right: 5px;
+  margin-bottom: 5px;
   border-radius: 10px;
   cursor: default;
 }

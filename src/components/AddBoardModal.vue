@@ -82,6 +82,7 @@ const createBoard = () => {
   boardMembers.value = [];
   members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
   modalVisible.value = false;
+  userStore.currentUserBoards.push(newBoard);
   setTimeout(() => {
     messageVisible.value = false;
   }, 2000);

@@ -62,7 +62,7 @@ const emit = defineEmits(['setMembers'])
 
 <style scoped>
 .board-members {
-  height: 70px;
+  height: 88px;
   border: 1px solid black;
   border-top: none;
   margin-bottom: 30px;
@@ -88,6 +88,7 @@ const emit = defineEmits(['setMembers'])
 .members-list {
   display: flex;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .members-item {
@@ -98,6 +99,7 @@ const emit = defineEmits(['setMembers'])
   padding: 5px;
   border-radius: 15px;
   margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 .delete-member {

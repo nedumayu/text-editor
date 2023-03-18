@@ -7,9 +7,11 @@
       || props.board.author.id === userStore.currentUser.id)" class="editor__footer">
         <Input v-model="commit" placeholder="Enter your message" class="commit"/>
         <Button class="commit-button" @click="commitChanges">Commit</Button>
-        {{message}}
       </div>
     </div>
+    <Toast :show="messageVisible">
+      {{ message }}
+    </Toast>
   </div>
 </template>
 
@@ -39,7 +41,9 @@ const props = defineProps({
 })
 
 const commit = ref('');
+
 const message = ref('');
+const messageVisible = ref(false);
 
 const wasEdit = ref(false);
 let isCommited = false;
@@ -84,7 +88,7 @@ onBeforeUnmount(() => {
 
 const commitChanges = () => {
   if (!wasEdit.value) {
-    message.value = 'Ничего не изменено';
+    showMessage('Ничего не изменено');
   } else {
     const newChange = {
       id: Date.now(),
@@ -98,11 +102,18 @@ const commitChanges = () => {
     }
     changesStore.addChange(newChange);
     isCommited = true;
-    message.value = 'Изменение прошло успешно!'
+    showMessage('Изменение прошло успешно!');
     commit.value = '';
   }
 }
 
+const showMessage = (msg) => {
+  message.value = msg;
+  messageVisible.value = true;
+  setTimeout(() => {
+    messageVisible.value = false;
+  }, 2000);
+}
 </script>
 
 
