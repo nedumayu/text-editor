@@ -1,3 +1,5 @@
+import BoardService from "../services/board-service.js";
+
 class BoardController {
     async getBoardById(req, res, next) {
         try{
@@ -9,9 +11,10 @@ class BoardController {
 
     async getBoards(req, res, next) {
         try{
-
+            const boards = await BoardService.getBoards()
+            return res.json(boards)
         } catch (e) {
-
+            next()
         }
     }
 }

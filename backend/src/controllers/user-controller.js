@@ -1,9 +1,20 @@
+import UserService from "../services/user-service.js";
+
 class UserController {
+    async getUsers(req, res, next) {
+        try{
+            const users = await UserService.getUsers()
+            return res.json(users)
+        } catch (e) {
+            next()
+        }
+    }
+
     async getUser(req, res, next) {
         try{
-            res.json('123 123')
-        } catch (e) {
 
+        } catch (e) {
+            next()
         }
     }
 }
