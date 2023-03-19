@@ -25,7 +25,7 @@ import {Highlight} from "@tiptap/extension-highlight";
 import {TaskItem} from "@tiptap/extension-task-item";
 import TaskList from '@tiptap/extension-task-list';
 import {useUserStore} from "../stores/UserStore.js";
-import {useChangesStore} from "../stores/ChangesStore";
+import {useChangesStore} from "../stores/ChangesStore.js";
 
 const boardStore = useBoardStore();
 const userStore = useUserStore();

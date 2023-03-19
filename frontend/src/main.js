@@ -4,7 +4,7 @@ import './main.css'
 import App from './App.vue'
 import router from "./router/Router.js";
 import components from './components/UI/ui.js'
-import VFocus from "./directives/VFocus";
+import VFocus from "./directives/VFocus.js";
 import LottieAnimation from "lottie-web-vue";
 
 const app = createApp(App);

@@ -73,8 +73,8 @@
 import {useBoardStore} from "../stores/BoardStore.js";
 import Editor from "../components/Editor.vue";
 import {useRoute, useRouter} from 'vue-router'
-import {useChangesStore} from "../stores/ChangesStore";
-import {useUserStore} from "../stores/UserStore";
+import {useChangesStore} from "../stores/ChangesStore.js";
+import {useUserStore} from "../stores/UserStore.js";
 import remixiconUrl from 'remixicon/fonts/remixicon.symbol.svg'
 import {ref} from "vue";
 import BoardMembers from "../components/BoardMembers.vue";
