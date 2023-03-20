@@ -1,59 +1,79 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import AuthService from "../services/AuthService.js";
+import axios from "axios";
+import {API_URL} from "../services/api.js";
 
 export const useUserStore = defineStore('userStore', () => {
-    const users = ref([
-        {
-            id: 1,
-            username: 'Alice',
-            email: '123',
-            password: '123',
-            boards: [0, 2, 4]
-        },
-        {
-            id: 2,
-            username: 'User',
-            email: 'user@gmail.com',
-            password: '123',
-            boards: [0, 1, 2, 4]
-        },
-        {
-            id: 3,
-            username: 'Antonette',
-            email: 'anthonetta@gmail.com',
-            password: '123',
-            boards: [2, 4]
-        },
-        {
-            id: 4,
-            username: 'Bret',
-            email: 'sincere@april.biz',
-            password: '123',
-            boards: [2]
-        },
-        {
-            id: 5,
-            username: 'Karianne',
-            email: 'ulianne.OConner@kory.org',
-            password: '123',
-            boards: [3]
-        }
-    ]);
-
     const isAuth = ref(false);
     const currentUser = ref({});
     const currentUserBoards = ref([]);
+    const message = ref('')
+    const loading = ref(false)
 
-    const addUser = (user) => {
-        users.value.push(user);
+    const login = async (email, password) => {
+        try {
+            const response = await AuthService.login(email, password);
+            console.log(response)
+            localStorage.setItem('token', response.data.accessToken);
+            isAuth.value = true
+            currentUser.value = response.data.user
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
     }
 
+    const registration = async (email, password, username) => {
+        try {
+            const response = await AuthService.registration(email, password, username);
+            console.log(response)
+            localStorage.setItem('token', response.data.accessToken);
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
+    const logout = async () => {
+        try {
+            const response = await AuthService.logout();
+            console.log(response)
+            localStorage.removeItem('token');
+            isAuth.value = false
+            currentUser.value = {}
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
+    const checkAuth = async () => {
+        loading.value = true
+        try {
+            const response = await axios.get(`${API_URL}/refresh`, {withCredentials: true})
+            console.log(response);
+            localStorage.setItem('token', response.data.accessToken);
+            isAuth.value = true
+            currentUser.value = response.data.user
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        } finally {
+            loading.value = false
+        }
+    }
+
+    onMounted(() => {
+        checkAuth()
+    })
+
     return {
-        users,
         isAuth,
         currentUser,
+        message,
+        loading,
+        login,
+        registration,
+        logout,
+        checkAuth,
         currentUserBoards,
-        addUser
     }
 })
 
