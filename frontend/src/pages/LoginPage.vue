@@ -29,23 +29,9 @@ const message = ref('');
 const messageVisible = ref(false);
 const userStore = useUserStore()
 
-const login = () => {
-  if (userStore.users.find(user => user.email === email.value)) {
-    if (userStore.users.find(user => user.password === password.value)) {
-      userStore.currentUser = {
-        id: userStore.users.find(user => user.email === email.value).id,
-        username: userStore.users.find(user => user.email === email.value).username,
-        email: email.value,
-        boards: userStore.users.find(user => user.email === email.value).boards,
-      }
-      userStore.isAuth = true;
-      router.push('/profile');
-    } else {
-      showMessage('Неверный пароль!')
-    }
-  } else {
-    showMessage('Неверный E-mail!')
-  }
+const login = async () => {
+  await userStore.login(email.value, password.value)
+  await router.push({path: '/profile'})
 }
 
 const showMessage = (msg) => {

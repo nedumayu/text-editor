@@ -32,31 +32,31 @@
       </div>
     </div>
 
-    <div v-if="userStore.currentUserBoards.length > 0">
-      <div class="boards-container">
-        <div class="boards-header">
-          <Input
-              v-model="searchQuery"
-              class="search-input"
-              placeholder="Search..."
-          />
-          <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
-          <Sort :boards="userStore.currentUserBoards"/>
-          <Filter :boards="userStore.currentUserBoards" @on-change-filter="setFilteredElements"/>
-        </div>
-        <AddBoardModal/>
-      </div>
-      <div class="profile-boards">
-        <Board
-            v-for="board of searchedElements"
-            :key="board.id"
-            :board="board"
-        />
-      </div>
-    </div>
-    <div v-else>
-      <AddBoardModal/>
-    </div>
+<!--    <div v-if="userStore.currentUserBoards.length > 0">-->
+<!--      <div class="boards-container">-->
+<!--        <div class="boards-header">-->
+<!--          <Input-->
+<!--              v-model="searchQuery"-->
+<!--              class="search-input"-->
+<!--              placeholder="Search..."-->
+<!--          />-->
+<!--          &lt;!&ndash;      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>&ndash;&gt;-->
+<!--          <Sort :boards="userStore.currentUserBoards"/>-->
+<!--          <Filter :boards="userStore.currentUserBoards" @on-change-filter="setFilteredElements"/>-->
+<!--        </div>-->
+<!--        <AddBoardModal/>-->
+<!--      </div>-->
+<!--      <div class="profile-boards">-->
+<!--        <Board-->
+<!--            v-for="board of searchedElements"-->
+<!--            :key="board.id"-->
+<!--            :board="board"-->
+<!--        />-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div v-else>-->
+<!--      <AddBoardModal/>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -79,11 +79,13 @@ const router = useRouter();
 
 const isEdit = ref(false);
 
-userStore.currentUserBoards = [];
-
-userStore.currentUser.boards.forEach(userBoard => {
-  userStore.currentUserBoards.push(boardStore.boards.find(board => board.id === userBoard));
-});
+// userStore.currentUserBoards = [];
+//
+// if (userStore.currentUserBoards) {
+//   userStore.currentUser.boards.forEach(userBoard => {
+//     userStore.currentUserBoards.push(boardStore.boards.find(board => board.id === userBoard));
+//   });
+// }
 
 const filteredElements = ref(userStore.currentUserBoards)
 const setFilteredElements = (f) => {
@@ -106,8 +108,7 @@ const saveEdit = () => {
 }
 
 const logout = () => {
-  userStore.isAuth = false;
-  userStore.currentUser = {};
+  userStore.logout()
   router.push('/');
 }
 </script>
