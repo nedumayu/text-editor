@@ -1,19 +1,23 @@
 <template>
   <div>
-    <Navbar/>
-    <div class="main">
-      <router-view v-slot=" {Component} ">
-        <transition name="fade" mode="out-in">
-          <component :is="Component"/>
-        </transition>
-      </router-view>
+    <div v-if="userStore.loading"></div>
+    <div v-else>
+      <Navbar/>
+      <div class="main">
+        <router-view v-slot=" {Component} ">
+          <transition name="fade" mode="out-in">
+            <component :is="Component"/>
+          </transition>
+        </router-view>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import Navbar from "./components/Navbar.vue";
-
+import {useUserStore} from "./stores/UserStore.js";
+const userStore = useUserStore()
 </script>
 
 <style scoped>

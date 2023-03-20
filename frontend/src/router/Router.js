@@ -19,14 +19,6 @@ const routes = [
     {
         path: '/profile',
         component: ProfilePage,
-        beforeEnter: (to, from, next) => {
-            const userStore = useUserStore();
-            if (!userStore.isAuth) {
-                next('/login');
-            } else {
-                next();
-            }
-        }
     },
     {
         path: `/board/:id`,
