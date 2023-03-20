@@ -17,6 +17,38 @@ class BoardController {
             next()
         }
     }
+
+    async addBoard(req, res, next) {
+        try{
+
+        } catch (e) {
+            next()
+        }
+    }
+
+    async updateBoard(req, res, next) {
+        try{
+
+        } catch (e) {
+            next()
+        }
+    }
+
+    async deleteBoard(req, res, next) {
+        try{
+
+        } catch (e) {
+            next()
+        }
+    }
+
+    async addChange(req, res, next) {
+        try{
+
+        } catch (e) {
+            next()
+        }
+    }
 }
 
 export default new BoardController()

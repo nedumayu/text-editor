@@ -1,5 +1,4 @@
 import {model, Schema} from "mongoose"
-import {ObjectId} from "mongodb";
 
 const BoardModel = new Schema({
     title: {type: String, required: true},

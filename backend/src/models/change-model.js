@@ -1,5 +1,4 @@
 import {model, Schema} from "mongoose"
-import {ObjectId} from "mongodb";
 
 const ChangeModel = new Schema({
     content: {type: String},

@@ -17,6 +17,22 @@ class UserController {
             next()
         }
     }
+
+    async updateUser(req, res, next) {
+        try{
+
+        } catch (e) {
+            next()
+        }
+    }
+
+    async deleteUser(req, res, next) {
+        try{
+
+        } catch (e) {
+            next()
+        }
+    }
 }
 
 export default new UserController()
