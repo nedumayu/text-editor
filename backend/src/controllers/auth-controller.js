@@ -1,6 +1,6 @@
-import UserService from "../services/user-service.js";
 import {validationResult} from "express-validator";
 import ApiError from "../exceptions/api-errors.js";
+import AuthService from "../services/auth-service.js";
 
 class AuthController {
     async registration(req, res, next) {
@@ -10,7 +10,7 @@ class AuthController {
                 return next(ApiError.BadRequest('Ошибки при валидации', errors.array()))
             }
             const {email, password, username} = req.body
-            const userData = await UserService.registration(email, password, username)
+            const userData = await AuthService.registration(email, password, username)
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             return res.json(userData)
         } catch (e) {
@@ -21,7 +21,7 @@ class AuthController {
     async login(req, res, next) {
         try {
             const {email, password} = req.body
-            const userData = await UserService.login(email, password)
+            const userData = await AuthService.login(email, password)
 
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             return res.json(userData);
@@ -33,7 +33,7 @@ class AuthController {
     async logout(req, res, next) {
         try {
             const {refreshToken} = req.cookies;
-            const token = await UserService.logout(refreshToken)
+            const token = await AuthService.logout(refreshToken)
             res.clearCookie('refreshToken')
             return res.json(token)
         } catch (e) {
@@ -44,7 +44,7 @@ class AuthController {
     async refresh(req, res, next) {
         try {
             const {refreshToken} = req.cookies;
-            const userData = await UserService.refresh(refreshToken)
+            const userData = await AuthService.refresh(refreshToken)
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             return res.json(userData);
         } catch (e) {
