@@ -1,6 +1,8 @@
 import BoardModel from "../models/board-model.js";
 import UserModel from "../models/user-model.js";
 import {ObjectId} from "mongodb";
+import ChangeModel from "../models/change-model.js";
+import ApiError from "../exceptions/api-errors.js";
 
 class BoardService {
     async getBoardById(id) {
@@ -78,6 +80,35 @@ class BoardService {
         author.save()
         const deletedBoard = await BoardModel.findByIdAndDelete(id)
         return deletedBoard
+    }
+
+    async addChange(board, user, content) {
+        const boardData = await BoardModel.findById(board)
+        if(boardData.members) {
+            for(const member of boardData.members) {
+                if (user === member.toString() || user === boardData.author.toString()) {
+                    continue
+                } else {
+                    throw ApiError.BadRequest("У пользователя нет доступа к этой доске")
+                }
+            }
+        }
+        const change = await ChangeModel.create(
+            {
+                content,
+                date: new Date(),
+                user: new ObjectId(user),
+                board: new ObjectId(board)
+            })
+        return change
+    }
+
+    async getChanges(boardId) {
+        const changes = await ChangeModel.find({board: boardId})
+        if (!changes) {
+            throw ApiError.BadRequest('У данной доски еще не было изменений')
+        }
+        return changes
     }
 }
 

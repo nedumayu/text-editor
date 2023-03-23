@@ -18,16 +18,17 @@ router.post('/logout', AuthController.logout)
 router.get('/refresh', AuthController.refresh)
 
 router.get('/users', AuthMiddleware, UserController.getUsers)
-router.get('/profile', UserController.getUser)
-router.put('/profile', UserController.updateUser)
-router.delete('/profile', UserController.deleteUser)
+router.get('/profile', AuthMiddleware, UserController.getUserById)
+router.put('/profile', AuthMiddleware, UserController.updateUser)
+router.delete('/profile', AuthMiddleware, UserController.deleteUser)
 
 router.get('/boards', BoardController.getBoards)
-router.post('/boards', BoardController.addBoard)
-router.get('/boards/:id', BoardController.getBoardById)
-router.put('/boards/:id', BoardController.updateBoard)
-router.delete('/boards/:id', BoardController.deleteBoard)
+router.post('/boards', AuthMiddleware, BoardController.addBoard)
+router.get('/boards/:id', AuthMiddleware, BoardController.getBoardById)
+router.put('/boards/:id', AuthMiddleware, BoardController.updateBoard)
+router.delete('/boards/:id', AuthMiddleware, BoardController.deleteBoard)
 
-router.post('/board/:id', BoardController.addChange)
+router.get('/boards/:id/changes', AuthMiddleware, BoardController.getChanges)
+router.post('/boards/:id', AuthMiddleware, BoardController.addChange)
 
 export default router
