@@ -3,9 +3,11 @@ import BoardService from "../services/board-service.js";
 class BoardController {
     async getBoardById(req, res, next) {
         try{
-
+            const {id} = req.params
+            const board = await BoardService.getBoardById(id)
+            return res.json(board)
         } catch (e) {
-
+            next()
         }
     }
 
@@ -20,7 +22,9 @@ class BoardController {
 
     async addBoard(req, res, next) {
         try{
-
+            const {title, content, author, members} = req.body
+            const board = await BoardService.addBoard(title, content, author, members)
+            return res.json(board)
         } catch (e) {
             next()
         }
@@ -28,7 +32,10 @@ class BoardController {
 
     async updateBoard(req, res, next) {
         try{
-
+            const {id} = req.params
+            const {title, content, isActive, members} = req.body
+            const board = await BoardService.updateBoard(id, title, content, isActive, members)
+            return res.json(board)
         } catch (e) {
             next()
         }
@@ -36,7 +43,9 @@ class BoardController {
 
     async deleteBoard(req, res, next) {
         try{
-
+            const {id} = req.params
+            const board = await BoardService.deleteBoard(id)
+            return res.json(board)
         } catch (e) {
             next()
         }

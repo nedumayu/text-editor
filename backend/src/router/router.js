@@ -24,9 +24,9 @@ router.delete('/profile', UserController.deleteUser)
 
 router.get('/boards', BoardController.getBoards)
 router.post('/boards', BoardController.addBoard)
-router.get('/board/:id', BoardController.getBoardById)
-router.put('/board/:id', BoardController.updateBoard)
-router.delete('/board/:id', BoardController.deleteBoard)
+router.get('/boards/:id', BoardController.getBoardById)
+router.put('/boards/:id', BoardController.updateBoard)
+router.delete('/boards/:id', BoardController.deleteBoard)
 
 router.post('/board/:id', BoardController.addChange)
 
