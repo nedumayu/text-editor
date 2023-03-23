@@ -2,7 +2,7 @@ import UserService from "../services/user-service.js";
 
 class UserController {
     async getUsers(req, res, next) {
-        try{
+        try {
             const users = await UserService.getUsers()
             return res.json(users)
         } catch (e) {
@@ -10,9 +10,11 @@ class UserController {
         }
     }
 
-    async getUser(req, res, next) {
-        try{
-
+    async getUserById(req, res, next) {
+        try {
+            const userData = req.params
+            const user = await UserService.getUserById(userData)
+            return res.json(user)
         } catch (e) {
             next()
         }
@@ -20,7 +22,9 @@ class UserController {
 
     async updateUser(req, res, next) {
         try{
-
+            const userData = req.body
+            const user = await UserService.updateUser(userData)
+            return res.json(user)
         } catch (e) {
             next()
         }
@@ -28,7 +32,9 @@ class UserController {
 
     async deleteUser(req, res, next) {
         try{
-
+            const userData = req.body
+            const user = await UserService.deleteUser(userData)
+            return res.json(user)
         } catch (e) {
             next()
         }
