@@ -11,13 +11,13 @@
         <Sort :boards="boardStore.boards"/>
         <Filter :boards="boardStore.boards" @on-change-filter="setFilteredElements"/>
       </div>
-      <AddBoardModal/>
+<!--      <AddBoardModal/>-->
     </div>
 
-    <div class="board-items">
+    <div class="board-items" v-if="!isLoading">
       <Board
           v-for="board of searchedElements"
-          :key="board.id"
+          :key="board._id"
           :board="board"
       />
     </div>
@@ -31,10 +31,11 @@ import {useSearching} from "../hooks/useSearching.js";
 import AddBoardModal from "../components/AddBoardModal.vue";
 import Sort from "../components/Sort.vue";
 import Filter from "../components/Filter.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import Search from "../components/Search.vue";
 
 const boardStore = useBoardStore()
+const isLoading = ref(true)
 
 const filteredElements = ref(boardStore.boards)
 const setFilteredElements = (f) => {
@@ -46,6 +47,11 @@ const setFilteredElements = (f) => {
 //   searchedElements.value = s;
 // }
 const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
+
+onMounted(async () => {
+  await boardStore.getBoards()
+  isLoading.value = false
+})
 
 </script>
 
