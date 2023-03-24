@@ -22,8 +22,8 @@ class BoardController {
 
     async addBoard(req, res, next) {
         try{
-            const {title, content, author, members} = req.body
-            const board = await BoardService.addBoard(title, content, author, members)
+            const {title, author, members} = req.body
+            const board = await BoardService.addBoard(title, author, members)
             return res.json(board)
         } catch (e) {
             next()
