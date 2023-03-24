@@ -29,15 +29,6 @@ const password = ref('');
 const messageVisible = ref(false);
 
 const createUser = () => {
-  // const newUser = {
-  //   id: Date.now(),
-  //   username: username.value,
-  //   email: email.value,
-  //   password: password.value,
-  //   boards: [],
-  // }
-  // userStore.addUser(newUser);
-  console.log(email.value, password.value, username.value)
   userStore.registration(email.value, password.value, username.value)
   // messageVisible.value = true;
   // setTimeout(() => {

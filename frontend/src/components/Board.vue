@@ -8,8 +8,7 @@
       <strong>{{ board.author.username }}</strong>
     </div>
     <div class="board-date">
-      {{ board.date.getDate() }}.{{ board.date.getMonth() + 1 }}.{{ board.date.getFullYear() }}
-      {{ board.date.getHours() }}:{{ board.date.getMinutes() }}
+      {{ transformDate(board.date) }}
     </div>
     <BoardMembers :members="board.members" v-if="board.members.length > 0"/>
     <div v-else></div>
@@ -18,6 +17,7 @@
 </template>
 
 <script setup>
+import transformDate from "../utils/transformDate.js";
 import BoardMembers from "./BoardMembers.vue";
 
 const props = defineProps({
@@ -28,6 +28,7 @@ const props = defineProps({
     }
   }
 })
+
 </script>
 
 <style scoped>

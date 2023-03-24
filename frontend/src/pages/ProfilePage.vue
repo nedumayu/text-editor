@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div v-else>
+      <div v-if="!isEdit && !isLoading">
         <div class="profile-info">
           <div>
             <img src="../assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
@@ -32,31 +32,31 @@
       </div>
     </div>
 
-<!--    <div v-if="userStore.currentUserBoards.length > 0">-->
-<!--      <div class="boards-container">-->
-<!--        <div class="boards-header">-->
-<!--          <Input-->
-<!--              v-model="searchQuery"-->
-<!--              class="search-input"-->
-<!--              placeholder="Search..."-->
-<!--          />-->
-<!--          &lt;!&ndash;      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>&ndash;&gt;-->
-<!--          <Sort :boards="userStore.currentUserBoards"/>-->
-<!--          <Filter :boards="userStore.currentUserBoards" @on-change-filter="setFilteredElements"/>-->
-<!--        </div>-->
-<!--        <AddBoardModal/>-->
-<!--      </div>-->
-<!--      <div class="profile-boards">-->
-<!--        <Board-->
-<!--            v-for="board of searchedElements"-->
-<!--            :key="board.id"-->
-<!--            :board="board"-->
-<!--        />-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div v-else>-->
-<!--      <AddBoardModal/>-->
-<!--    </div>-->
+    <div v-if="!isLoading && userStore.currentUser.boards.length > 0">
+      <div class="boards-container">
+        <div class="boards-header">
+          <Input
+              v-model="searchQuery"
+              class="search-input"
+              placeholder="Search..."
+          />
+          <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
+          <Sort :boards="userStore.currentUser.boards"/>
+          <Filter :boards="userStore.currentUser.boards" @on-change-filter="setFilteredElements"/>
+        </div>
+        <AddBoardModal/>
+      </div>
+      <div class="profile-boards">
+        <Board
+            v-for="board of searchedElements"
+            :key="board.id"
+            :board="board"
+        />
+      </div>
+    </div>
+    <div v-else>
+      <AddBoardModal/>
+    </div>
   </div>
 </template>
 
@@ -72,44 +72,39 @@ import Filter from "../components/Filter.vue";
 import AddBoardModal from "../components/AddBoardModal.vue";
 import {useSearching} from "../hooks/useSearching.js";
 
-
 const userStore = useUserStore();
 const boardStore = useBoardStore();
 const router = useRouter();
 
-const isEdit = ref(false);
+const isEdit = ref(false)
+const isLoading = ref(false)
 
-// userStore.currentUserBoards = [];
-//
-// if (userStore.currentUserBoards) {
-//   userStore.currentUser.boards.forEach(userBoard => {
-//     userStore.currentUserBoards.push(boardStore.boards.find(board => board.id === userBoard));
-//   });
-// }
-
-const filteredElements = ref(userStore.currentUserBoards)
+const filteredElements = ref(userStore.currentUser.boards)
 const setFilteredElements = (f) => {
-  filteredElements.value = f;
+  filteredElements.value = f
 }
 const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
 
-const username = ref(userStore.currentUser.username);
-const email = ref(userStore.currentUser.email);
+const username = ref(userStore.currentUser.username)
+const email = ref(userStore.currentUser.email)
 
 const saveEdit = () => {
-  userStore.currentUser.username = username.value;
-  userStore.currentUser.email = email.value;
-
-  const user = userStore.users.find(user => user.id === userStore.currentUser.id);
-  user.username = username.value;
-  user.email = email.value;
-
-  isEdit.value = false;
+  isLoading.value = true
+  const newUser = {
+    _id: userStore.currentUser.id,
+    username: username.value,
+    email: email.value
+  }
+  userStore.updateUser(newUser)
+  userStore.currentUser.username = username.value
+  userStore.currentUser.email = email.value
+  isEdit.value = false
+  isLoading.value = false
 }
 
 const logout = () => {
   userStore.logout()
-  router.push('/');
+  router.push('/')
 }
 </script>
 
