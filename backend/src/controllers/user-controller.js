@@ -10,16 +10,6 @@ class UserController {
         }
     }
 
-    async getUserById(req, res, next) {
-        try {
-            const userData = req.params
-            const user = await UserService.getUserById(userData)
-            return res.json(user)
-        } catch (e) {
-            next()
-        }
-    }
-
     async updateUser(req, res, next) {
         try{
             const userData = req.body
