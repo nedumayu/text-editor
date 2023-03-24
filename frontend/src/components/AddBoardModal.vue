@@ -18,7 +18,7 @@
           v-focus
       />
       <h3>Участники:</h3>
-      <EditBoardMembers
+      <EditBoardMembers v-if="!isLoading"
           :members="members"
           :board-members="boardMembers"
           @setMembers="setMembers"
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useUserStore} from "../stores/UserStore.js";
 import {useBoardStore} from "../stores/BoardStore.js";
 import EditBoardMembers from "./EditBoardMembers.vue";
@@ -44,8 +44,9 @@ const title = ref('');
 
 const modalVisible = ref(false);
 const messageVisible = ref(false);
+const isLoading = ref(false)
 
-const members = ref(userStore.users.filter(member => member.id !== userStore.currentUser.id));
+const members = ref([]);
 const boardMembers = ref([]);
 
 const setMembers = ([m, b]) => {
@@ -54,40 +55,32 @@ const setMembers = ([m, b]) => {
 }
 
 const createBoard = () => {
+  const memberIds = boardMembers.value.map(member => member.id)
+
   const newBoard = {
-    id: Date.now(),
     title: title.value,
-    date: new Date(),
-    content: '',
-    isActive: true,
-    author: {
-      id: userStore.currentUser.id,
-      username: userStore.currentUser.username,
-    },
-    members: boardMembers.value,
+    author: userStore.currentUser.id,
+    members: memberIds
   }
   boardStore.addBoard(newBoard);
 
-  const currUser = userStore.users.find(user => user.id === userStore.currentUser.id);
-  currUser.boards = [...currUser.boards, newBoard.id];
-  userStore.currentUser.boards = [...currUser.boards];
-
-  boardMembers.value.forEach(member => {
-    const user = userStore.users.find(user => user.id === member.id);
-    user.boards = [...user.boards, newBoard.id]
-  })
 
   messageVisible.value = true;
   title.value = '';
   boardMembers.value = [];
   members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
   modalVisible.value = false;
-  userStore.currentUserBoards.push(newBoard);
   setTimeout(() => {
     messageVisible.value = false;
   }, 2000);
 }
 
+onMounted(async() => {
+  isLoading.value = true
+  await userStore.getUsers()
+  members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id)
+  isLoading.value = false
+})
 </script>
 
 <style scoped>

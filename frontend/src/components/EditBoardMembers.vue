@@ -43,7 +43,8 @@ const addMemberToBoard = (id) => {
   const user = userStore.users.find(user => user.id === id);
   boardMembers.value.push({
     id: user.id,
-    username: user.username
+    username: user.username,
+    email: user.email
   });
   members.value = members.value.filter(member => member.id !== id);
 }
@@ -53,7 +54,8 @@ const deleteMember = (id) => {
   boardMembers.value = boardMembers.value.filter(member => member.id !== id);
   members.value.push({
     id: id,
-    username: userStore.users.find(user => user.id === id).username
+    username: userStore.users.find(user => user.id === id).username,
+    email: userStore.users.find(user => user.id === id).email
   });
 }
 
