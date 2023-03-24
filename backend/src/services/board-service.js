@@ -3,21 +3,28 @@ import UserModel from "../models/user-model.js";
 import {ObjectId} from "mongodb";
 import ChangeModel from "../models/change-model.js";
 import ApiError from "../exceptions/api-errors.js";
+import UserService from "./user-service.js";
 
 class BoardService {
     async getBoardById(id) {
         const board = await BoardModel.findById(id)
-        return board
+        const boardWithUser = await UserService.getBoardUsers(board)
+        return {...boardWithUser, content: board.content, isActive: board.isActive}
     }
 
     async getBoards() {
         const boards = await BoardModel.find()
-        return boards
+        const boardsWithUsers = []
+        for(const board of boards) {
+            const b = await UserService.getBoardUsers(board)
+            boardsWithUsers.push(b)
+        }
+        return boardsWithUsers
     }
 
-    async addBoard (title, content, author, members) {
+    async addBoard (title, author, members) {
         const membersIds = members.map(member => new ObjectId(member))
-        const board = await BoardModel.create({title, date: new Date(), content, author: new ObjectId(author), members: membersIds})
+        const board = await BoardModel.create({title, date: new Date(), author: new ObjectId(author), members: membersIds})
         const user = await UserModel.findById(author)
         user.boards.push(board._id)
         user.save()
@@ -40,9 +47,7 @@ class BoardService {
                     continue
                 }
                 else {
-                    console.log('nun')
                     const user = await UserModel.findById(memberId)
-                    console.log(user)
                     if (user.boards.includes(id)) {
                         user.boards = user.boards.filter(boardId => boardId.toString() !== id)
                         user.save()
