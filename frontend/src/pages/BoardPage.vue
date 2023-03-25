@@ -1,13 +1,13 @@
 <template>
   <div class="board">
-    <Editor :board="board"/>
+    <!--    <Editor :board="board"/>-->
 
-    <div class="board-info">
+    <div class="board-info" v-if="!isLoading">
       <div class="board-header">
-        <h1>BOARD #{{ board.id }}</h1>
+        <h1>BOARD #{{ boardStore.currentBoard.id }}</h1>
         <div
             class="board-buttons"
-            v-if="board.author.id === userStore.currentUser.id"
+            v-if="boardStore.currentBoard.author.id === userStore.currentUser.id"
         >
           <button class="menu-item" @click="isEdit = true" title="Edit board">
             <svg class="remix">
@@ -53,17 +53,16 @@
 
       <div v-else>
         <h3 style="margin-bottom: 20px">
-          {{ board.title }}
+          {{ boardStore.currentBoard.title }}
         </h3>
         <div>
-          Author: {{ board.author.username }}
+          Author: {{ boardStore.currentBoard.author.username }}
         </div>
         <div class="board-date">
-          {{ board.date.getDate() }}.{{ board.date.getMonth() + 1 }}.{{ board.date.getFullYear() }}
-          {{ board.date.getHours() }}:{{ board.date.getMinutes() }}:{{ board.date.getSeconds() }}
+          {{ transformDate(boardStore.currentBoard.date) }}
         </div>
-        <BoardMembers :members="board.members" v-if="board.members.length > 0"/>
-        <Commits :board="board" v-if="changesStore.changes.filter(c => c.boardId === board.id).length > 0"/>
+        <BoardMembers :members="boardStore.currentBoard.members" v-if="boardStore.currentBoard.members.length > 0"/>
+        <!--        <Commits :board="board" v-if="changesStore.changes.filter(c => c.boardId === board.id).length > 0"/>-->
       </div>
     </div>
   </div>
@@ -76,10 +75,11 @@ import {useRoute, useRouter} from 'vue-router'
 import {useChangesStore} from "../stores/ChangesStore.js";
 import {useUserStore} from "../stores/UserStore.js";
 import remixiconUrl from 'remixicon/fonts/remixicon.symbol.svg'
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import BoardMembers from "../components/BoardMembers.vue";
 import Commits from "../components/Commits.vue";
 import EditBoardMembers from "../components/EditBoardMembers.vue";
+import transformDate from "../utils/transformDate.js";
 
 const boardStore = useBoardStore();
 const changesStore = useChangesStore();
@@ -87,18 +87,27 @@ const userStore = useUserStore();
 
 const route = useRoute();
 const router = useRouter();
-const board = boardStore.boards.find(b => b.id === Number(route.params.id));
 
-const isEdit = ref(false);
+const isEdit = ref(false)
+const isLoading = ref(true)
 
-const title = ref(board.title);
-const isActive = ref(board.isActive);
+// const board = ref({})
+const boardMembers = ref([])
+const members = ref([])
 
-const boardMembers = ref(board.members);
+const title = ref("");
+const isActive = ref("");
 
-const members = ref(userStore.users.filter(member => member.id !== userStore.currentUser.id));
-boardMembers.value.forEach(b => {
-  members.value = members.value.filter(member => member.id !== b.id)
+onMounted(async () => {
+  await boardStore.getBoardById(route.params.id)
+  boardMembers.value = boardStore.currentBoard.members
+  members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id)
+  boardMembers.value.forEach(b => {
+    members.value = members.value.filter(member => member.id !== b.id)
+  })
+  title.value = boardStore.currentBoard.title
+  isActive.value = boardStore.currentBoard.isActive
+  isLoading.value = false
 })
 
 const setMembers = ([m, b]) => {
@@ -106,25 +115,32 @@ const setMembers = ([m, b]) => {
   boardMembers.value = b;
 }
 
-const deleteBoard = () => {
-  boardStore.boards = boardStore.boards.filter(b => b.id !== board.id);
-  const user = userStore.users.find(user => user.id === userStore.currentUser.id);
-  user.boards =  user.boards.filter(b => b !== board.id);
-  userStore.currentUser.boards = userStore.users.find(user => user.id === userStore.currentUser.id).boards;
+const deleteBoard = async () => {
+  isLoading.value = true
+  await boardStore.deleteBoard(route.params.id)
+  await userStore.checkAuth()
   router.go(-1);
+  isLoading.value = false
 }
 
-const saveEdit = () => {
-  board.title = title.value;
-  board.members = boardMembers.value;
-  board.isActive = isActive.value;
+const saveEdit = async () => {
+  isLoading.value = true
+  const memberIds = boardMembers.value.map(member => member.id)
+  const updatedBoard = {
+    title: title.value,
+    isActive: isActive.value,
+    members: memberIds,
+    content: boardStore.currentBoard.content
+  }
+  await boardStore.updateBoard(route.params.id, updatedBoard)
   isEdit.value = false;
+  isLoading.value = false
 }
 
 const cancel = () => {
-  title.value = board.title;
-  isActive.value = board.isActive;
-  boardMembers.value = board.members;
+  title.value = boardStore.currentBoard.title;
+  isActive.value = boardStore.currentBoard.isActive;
+  boardMembers.value = boardStore.currentBoard.members;
   members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
   boardMembers.value.forEach(b => {
     members.value = members.value.filter(member => member.id !== b.id)

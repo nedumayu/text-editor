@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="boards-container">
+  <div v-if="!isLoading && boardStore.boards.length > 0">
+    <div class="boards-container" >
       <div class="boards-header">
         <Input
             v-model="searchQuery"
@@ -11,17 +11,18 @@
         <Sort :boards="boardStore.boards"/>
         <Filter :boards="boardStore.boards" @on-change-filter="setFilteredElements"/>
       </div>
-<!--      <AddBoardModal/>-->
+      <AddBoardModal/>
     </div>
 
-    <div class="board-items" v-if="!isLoading">
+    <div class="board-items" >
       <Board
           v-for="board of searchedElements"
-          :key="board._id"
+          :key="board.id"
           :board="board"
       />
     </div>
   </div>
+  <div v-else>загрузка....</div>
 </template>
 
 <script setup>
@@ -35,20 +36,21 @@ import {onMounted, ref} from "vue";
 import Search from "../components/Search.vue";
 
 const boardStore = useBoardStore()
-const isLoading = ref(true)
+const isLoading = ref(false)
 
 const filteredElements = ref(boardStore.boards)
 const setFilteredElements = (f) => {
   filteredElements.value = f;
 }
+const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
 
 // const searchedElements = ref(boardStore.boards)
 // const setSearch = (s) => {
 //   searchedElements.value = s;
 // }
-const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
 
 onMounted(async () => {
+  isLoading.value = true
   await boardStore.getBoards()
   isLoading.value = false
 })

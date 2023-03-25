@@ -54,7 +54,7 @@ const setMembers = ([m, b]) => {
   boardMembers.value = b;
 }
 
-const createBoard = () => {
+const createBoard = async () => {
   const memberIds = boardMembers.value.map(member => member.id)
 
   const newBoard = {
@@ -62,7 +62,8 @@ const createBoard = () => {
     author: userStore.currentUser.id,
     members: memberIds
   }
-  boardStore.addBoard(newBoard);
+  await boardStore.addBoard(newBoard);
+  //userStore.getUserData(userStore.currentUser.id)
 
 
   messageVisible.value = true;
@@ -70,6 +71,7 @@ const createBoard = () => {
   boardMembers.value = [];
   members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
   modalVisible.value = false;
+  await userStore.checkAuth()
   setTimeout(() => {
     messageVisible.value = false;
   }, 2000);
