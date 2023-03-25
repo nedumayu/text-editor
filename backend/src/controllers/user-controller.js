@@ -11,7 +11,7 @@ class UserController {
     }
 
     async updateUser(req, res, next) {
-        try{
+        try {
             const userData = req.body
             const user = await UserService.updateUser(userData)
             return res.json(user)
@@ -21,7 +21,7 @@ class UserController {
     }
 
     async deleteUser(req, res, next) {
-        try{
+        try {
             const userData = req.body
             const user = await UserService.deleteUser(userData)
             return res.json(user)

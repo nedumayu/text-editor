@@ -44,6 +44,7 @@ class UserService {
             id: board._id,
             title: board.title,
             date: board.date,
+            isActive: board.isActive,
             author: {id: authorId, username: author},
             members: boardMembers
         }

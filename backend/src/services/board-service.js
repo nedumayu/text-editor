@@ -40,7 +40,6 @@ class BoardService {
 
     async updateBoard(id, title, content, isActive, members) {
         const board = await BoardModel.findById(id)
-        console.log(board)
         if (board.members.toString() !== members.toString()) {
             for (const memberId of board.members) {
                 if (members.includes(memberId.toString())) {
@@ -67,7 +66,8 @@ class BoardService {
                 }
             }
         }
-        const newBoard = await BoardModel.findByIdAndUpdate(id, {title, date: new Date(), content, isActive, members}, {new: true})
+        const bb = await BoardModel.findByIdAndUpdate(id, {title, date: new Date(), content, isActive, members}, {new: true})
+        const newBoard = await UserService.getBoardUsers(bb)
         return newBoard
     }
 
