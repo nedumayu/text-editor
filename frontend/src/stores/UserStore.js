@@ -91,7 +91,7 @@ export const useUserStore = defineStore('userStore', () => {
         logout,
         checkAuth,
         getUsers,
-        updateUser,
+        updateUser
     }
 })
 

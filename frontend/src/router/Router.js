@@ -21,7 +21,7 @@ const routes = [
         component: ProfilePage,
     },
     {
-        path: `/board/:id`,
+        path: `/boards/:id`,
         component: BoardPage,
         beforeEnter: (to, from, next) => {
             const userStore = useUserStore();
