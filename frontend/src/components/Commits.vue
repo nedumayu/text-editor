@@ -3,7 +3,7 @@
     <h4 class="changes-title">COMMITS:</h4>
     <div class="changes-list">
       <div
-          v-for="change in changesStore.changes.filter(c => c.boardId === board.id).sort((a, b) => b.date - a.date)"
+          v-for="change in changes"
           :key="change.id"
           class="changes-item"
       >
@@ -11,8 +11,7 @@
           {{ change.user.username }}
         </strong>
         <div class="change-date">
-          {{ change.date.getDate() }}.{{ change.date.getMonth() + 1 }}.{{ change.date.getFullYear() }}
-          {{ change.date.getHours() }}:{{ change.date.getMinutes() }}
+          {{ transformDate(change.date)}}
         </div>
         <div class="change-content" :title="`${change.content}`">{{ change.content }}</div>
       </div>
@@ -21,18 +20,17 @@
 </template>
 
 <script setup>
-import {useChangesStore} from "../stores/ChangesStore.js";
-
-const changesStore = useChangesStore();
+import transformDate from "../utils/transformDate.js";
 
 const props = defineProps({
-  board: {
-    type: Object,
+  changes: {
+    type: Array,
     required: true,
     default: () => {
     }
   }
 })
+
 </script>
 
 <style scoped>

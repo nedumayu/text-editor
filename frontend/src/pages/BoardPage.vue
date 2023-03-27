@@ -1,10 +1,10 @@
 <template>
-  <div class="board">
-    <!--    <Editor :board="board"/>-->
+  <div class="board" v-if="!isLoading">
+    <Editor :board="boardStore.currentBoard"/>
 
-    <div class="board-info" v-if="!isLoading">
+    <div class="board-info">
       <div class="board-header">
-        <h1>BOARD #{{ boardStore.currentBoard.id }}</h1>
+        <h1>BOARD #{{ boardStore.currentBoard.id.slice(20,25) }}</h1>
         <div
             class="board-buttons"
             v-if="boardStore.currentBoard.author.id === userStore.currentUser.id"
@@ -62,7 +62,7 @@
           {{ transformDate(boardStore.currentBoard.date) }}
         </div>
         <BoardMembers :members="boardStore.currentBoard.members" v-if="boardStore.currentBoard.members.length > 0"/>
-        <!--        <Commits :board="board" v-if="changesStore.changes.filter(c => c.boardId === board.id).length > 0"/>-->
+        <Commits :changes="boardStore.currentBoard.changes" v-if="boardStore.currentBoard.changes.length > 0"/>
       </div>
     </div>
   </div>
@@ -72,7 +72,6 @@
 import {useBoardStore} from "../stores/BoardStore.js";
 import Editor from "../components/Editor.vue";
 import {useRoute, useRouter} from 'vue-router'
-import {useChangesStore} from "../stores/ChangesStore.js";
 import {useUserStore} from "../stores/UserStore.js";
 import remixiconUrl from 'remixicon/fonts/remixicon.symbol.svg'
 import {onMounted, ref} from "vue";
@@ -82,7 +81,6 @@ import EditBoardMembers from "../components/EditBoardMembers.vue";
 import transformDate from "../utils/transformDate.js";
 
 const boardStore = useBoardStore();
-const changesStore = useChangesStore();
 const userStore = useUserStore();
 
 const route = useRoute();
@@ -91,7 +89,6 @@ const router = useRouter();
 const isEdit = ref(false)
 const isLoading = ref(true)
 
-// const board = ref({})
 const boardMembers = ref([])
 const members = ref([])
 
@@ -116,11 +113,10 @@ const setMembers = ([m, b]) => {
 }
 
 const deleteBoard = async () => {
-  isLoading.value = true
   await boardStore.deleteBoard(route.params.id)
-  await userStore.checkAuth()
+  boardStore.boards = boardStore.boards.filter(board => board.id !== route.params.id)
+  userStore.currentUser.boards = userStore.currentUser.boards.filter(board => board.id !== route.params.id)
   router.go(-1);
-  isLoading.value = false
 }
 
 const saveEdit = async () => {
@@ -132,7 +128,23 @@ const saveEdit = async () => {
     members: memberIds,
     content: boardStore.currentBoard.content
   }
-  await boardStore.updateBoard(route.params.id, updatedBoard)
+  const newBoard = await boardStore.updateBoard(route.params.id, updatedBoard)
+  boardStore.currentBoard = newBoard
+  if(boardStore.boards.length !== 0){
+    const board = boardStore.boards.find(bd => bd.id === newBoard.id)
+    board.title = newBoard.title
+    board.isActive = newBoard.isActive
+    board.members = newBoard.members
+    board.content = newBoard.content
+    board.date = newBoard.date
+  }
+  const userBoard = userStore.currentUser.boards.find(board => board.id === newBoard.id)
+  userBoard.title = newBoard.title
+  userBoard.isActive = newBoard.isActive
+  userBoard.members = newBoard.members
+  userBoard.content = newBoard.content
+  userBoard.date = newBoard.date
+
   isEdit.value = false;
   isLoading.value = false
 }
