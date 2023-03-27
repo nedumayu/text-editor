@@ -6,7 +6,7 @@
       <div v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
       || props.board.author.id === userStore.currentUser.id)" class="editor__footer">
         <Input v-model="commit" placeholder="Enter your message" class="commit"/>
-        <Button class="commit-button" @click="commitChanges">Commit</Button>
+        <Button v-if="!isLoading" class="commit-button" @click="commitChanges">Commit</Button>
       </div>
     </div>
     <Toast :show="messageVisible">
@@ -25,11 +25,11 @@ import {Highlight} from "@tiptap/extension-highlight";
 import {TaskItem} from "@tiptap/extension-task-item";
 import TaskList from '@tiptap/extension-task-list';
 import {useUserStore} from "../stores/UserStore.js";
-import {useChangesStore} from "../stores/ChangesStore.js";
+import {useRoute} from "vue-router";
 
 const boardStore = useBoardStore();
 const userStore = useUserStore();
-const changesStore = useChangesStore();
+const route = useRoute();
 
 const props = defineProps({
   board: {
@@ -40,7 +40,9 @@ const props = defineProps({
   }
 })
 
+const newContent = ref({})
 const commit = ref('');
+const isLoading = ref(false)
 
 const message = ref('');
 const messageVisible = ref(false);
@@ -53,7 +55,8 @@ const editor = new Editor({
   onUpdate: ({editor}) => {
     wasEdit.value = true;
     const json = editor.getJSON();
-    props.board.content = json;
+    newContent.value = json
+    boardStore.currentBoard.content = json
   },
   extensions: [
     StarterKit.configure({}),
@@ -68,42 +71,51 @@ const editor = new Editor({
 
 editor.commands.focus('end')
 
-onBeforeUnmount(() => {
-  editor.destroy();
+const saveContent = async () => {
+  isLoading.value = true
+  const memberIds = boardStore.currentBoard.members.map(member => member.id)
+  const updatedBoard = {
+    title: boardStore.currentBoard.title,
+    isActive: boardStore.currentBoard.isActive,
+    members: memberIds,
+    content: newContent.value
+  }
+  await boardStore.updateBoard(route.params.id, updatedBoard)
+  isLoading.value = false
+}
 
+onBeforeUnmount(async () => {
+  editor.destroy();
   if (wasEdit.value && !isCommited) {
-    const newChange = {
-      id: Date.now(),
-      boardId: props.board.id,
-      user: {
-        id: userStore.currentUser.id,
-        username: userStore.currentUser.username
-      },
-      date: new Date(),
-      content: commit.value || 'Добавлено новое изменение',
-    }
-    changesStore.addChange(newChange);
+    await commitChanges()
   }
 })
 
-const commitChanges = () => {
+const commitChanges = async () => {
   if (!wasEdit.value) {
     showMessage('Ничего не изменено');
   } else {
+    isLoading.value = true
     const newChange = {
-      id: Date.now(),
-      boardId: props.board.id,
+      user: userStore.currentUser.id,
+      content: commit.value || 'Добавлено новое изменение',
+    }
+    const change = await boardStore.addChange(route.params.id, newChange);
+    await saveContent()
+    props.board.changes.push({
+      id: change._id,
       user: {
         id: userStore.currentUser.id,
         username: userStore.currentUser.username
       },
-      date: new Date(),
-      content: commit.value || 'Добавлено новое изменение',
-    }
-    changesStore.addChange(newChange);
+      content: change.content,
+      board: change.board,
+      date: change.date
+    })
     isCommited = true;
     showMessage('Изменение прошло успешно!');
     commit.value = '';
+    isLoading.value = false
   }
 }
 
@@ -115,7 +127,6 @@ const showMessage = (msg) => {
   }, 2000);
 }
 </script>
-
 
 <style scoped>
 .commit {
