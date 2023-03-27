@@ -3,7 +3,7 @@ import ApiError from "../exceptions/api-errors.js";
 import bcrypt from "bcrypt";
 import UserDto from "../dtos/user-dto.js";
 import TokenService from "./token-service.js";
-import UserService from "./user-service.js";
+import UtilService from "./util-service.js";
 
 class AuthService {
     async registration(email, password, username) {
@@ -32,7 +32,7 @@ class AuthService {
         const userDto = new UserDto(user);
         const tokens = TokenService.generateTokens({...userDto})
         await TokenService.saveToken(userDto.id, tokens.refreshToken)
-        const currentUser = await UserService.getCurrentUser(user)
+        const currentUser = await UtilService.getCurrentUser(user)
 
         return {...tokens, user: currentUser}
     }
@@ -55,7 +55,7 @@ class AuthService {
         const userDto = new UserDto(user);
         const tokens = TokenService.generateTokens({...userDto})
         await TokenService.saveToken(userDto.id, tokens.refreshToken)
-        const currentUser = await UserService.getCurrentUser(user)
+        const currentUser = await UtilService.getCurrentUser(user)
         return {...tokens, user: currentUser}
     }
 }
