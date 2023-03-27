@@ -18,7 +18,7 @@
           v-focus
       />
       <h3>Участники:</h3>
-      <EditBoardMembers v-if="!isLoading"
+      <EditBoardMembers v-if="!isLoading && members.length > 0"
           :members="members"
           :board-members="boardMembers"
           @setMembers="setMembers"
@@ -46,7 +46,7 @@ const modalVisible = ref(false);
 const messageVisible = ref(false);
 const isLoading = ref(false)
 
-const members = ref([]);
+const members = ref(userStore.users.filter(member => member.id !== userStore.currentUser.id));
 const boardMembers = ref([]);
 
 const setMembers = ([m, b]) => {
@@ -56,32 +56,33 @@ const setMembers = ([m, b]) => {
 
 const createBoard = async () => {
   const memberIds = boardMembers.value.map(member => member.id)
-
   const newBoard = {
     title: title.value,
     author: userStore.currentUser.id,
     members: memberIds
   }
-  await boardStore.addBoard(newBoard);
-  //userStore.getUserData(userStore.currentUser.id)
-
-
+  const bd = await boardStore.addBoard(newBoard);
+  if (boardStore.boards.length !== 0) {
+    boardStore.boards.push(bd)
+  }
+  userStore.currentUser.boards.push(bd)
   messageVisible.value = true;
   title.value = '';
   boardMembers.value = [];
   members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
   modalVisible.value = false;
-  await userStore.checkAuth()
   setTimeout(() => {
     messageVisible.value = false;
   }, 2000);
 }
 
 onMounted(async() => {
-  isLoading.value = true
-  await userStore.getUsers()
-  members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id)
-  isLoading.value = false
+  if (userStore.users.length === 0) {
+    isLoading.value = true
+    await userStore.getUsers()
+    members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id)
+    isLoading.value = false
+  }
 })
 </script>
 

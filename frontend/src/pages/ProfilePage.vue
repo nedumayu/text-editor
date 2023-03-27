@@ -98,6 +98,11 @@ const saveEdit = () => {
   userStore.updateUser(newUser)
   userStore.currentUser.username = username.value
   userStore.currentUser.email = email.value
+  boardStore.boards.forEach(board => {
+    if (board.author.id === userStore.currentUser.id) {
+      board.author.username = username.value
+    }
+  })
   isEdit.value = false
   isLoading.value = false
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading && boardStore.boards.length > 0">
+  <div v-if="!isLoading">
     <div class="boards-container" >
       <div class="boards-header">
         <Input
@@ -34,8 +34,10 @@ import Sort from "../components/Sort.vue";
 import Filter from "../components/Filter.vue";
 import {onMounted, ref} from "vue";
 import Search from "../components/Search.vue";
+import {useUserStore} from "../stores/UserStore.js";
 
 const boardStore = useBoardStore()
+const userStore = useUserStore()
 const isLoading = ref(false)
 
 const filteredElements = ref(boardStore.boards)
@@ -50,9 +52,12 @@ const {searchQuery, searchedElements} = useSearching(filteredElements, 'title');
 // }
 
 onMounted(async () => {
-  isLoading.value = true
-  await boardStore.getBoards()
-  isLoading.value = false
+  if (boardStore.boards.length === 0) {
+    isLoading.value = true
+    await boardStore.getBoards()
+    filteredElements.value = boardStore.boards
+    isLoading.value = false
+  }
 })
 
 </script>
