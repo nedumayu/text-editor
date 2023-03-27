@@ -61,16 +61,6 @@ class BoardController {
             next()
         }
     }
-
-    async getChanges(req, res, next) {
-        try{
-            const {id} = req.params
-            const changes = await BoardService.getChanges(id)
-            return res.json(changes)
-        } catch (e) {
-            next()
-        }
-    }
 }
 
 export default new BoardController()
