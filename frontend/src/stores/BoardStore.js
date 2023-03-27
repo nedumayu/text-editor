@@ -6,7 +6,6 @@ import BoardService from "../services/BoardService.js";
 
 export const useBoardStore = defineStore('boardStore', () => {
     const boards = ref([]);
-    const loading = ref(false)
     const currentBoard = ref({})
 
     const getBoards = async() => {
@@ -21,7 +20,7 @@ export const useBoardStore = defineStore('boardStore', () => {
     const addBoard = async(userData) => {
         try {
             const response = await BoardService.addBoard(userData)
-            boards.value = response.data
+            return response.data
         } catch (e) {
             console.log(e.response?.data?.message);
         }
@@ -39,7 +38,7 @@ export const useBoardStore = defineStore('boardStore', () => {
     const updateBoard = async (id, board) => {
         try {
             const response = await BoardService.updateBoard(id, board)
-            currentBoard.value = response.data
+            return response.data
         } catch (e) {
             console.log(e.response?.data?.message);
         }
@@ -48,7 +47,15 @@ export const useBoardStore = defineStore('boardStore', () => {
     const deleteBoard = async (id) => {
         try {
             const response = await BoardService.deleteBoard(id)
-            console.log(response)
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
+    const addChange = async (id, changeData) => {
+        try {
+            const response = await BoardService.addChanges(id, changeData)
+            return response.data
         } catch (e) {
             console.log(e.response?.data?.message);
         }
@@ -60,8 +67,8 @@ export const useBoardStore = defineStore('boardStore', () => {
         getBoardById,
         updateBoard,
         deleteBoard,
+        addChange,
         boards,
-        loading,
         currentBoard
     }
 })

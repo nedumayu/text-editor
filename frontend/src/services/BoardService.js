@@ -16,4 +16,8 @@ export default class BoardService {
     static async deleteBoard(id) {
         return api.delete(`/boards/${id}`)
     }
+
+    static async addChanges (id, data) {
+        return api.post(`/boards/${id}`, data)
+    }
 }
