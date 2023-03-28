@@ -8,7 +8,7 @@
       <Button @click="createUser">Sign up</Button>
     </form>
     <Toast :show="messageVisible">
-      {{ userStore.message }}
+      {{ message }}
     </Toast>
   </div>
 </template>
@@ -27,17 +27,26 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const messageVisible = ref(false);
+const message = ref('')
 
-const createUser = () => {
-  userStore.registration(email.value, password.value, username.value)
-  // messageVisible.value = true;
-  // setTimeout(() => {
-  //   messageVisible.value = false;
-  // }, 3000);
-  // username.value = '';
-  // email.value = '';
-  // password.value = '';
+const createUser = async () => {
+  const response = await userStore.registration(email.value, password.value, username.value)
+  if (response) {
+    showMessage("Вы зарегистрированы")
+    username.value = '';
+    email.value = '';
+    password.value = '';
+  } else {
+    showMessage("Произошла ошибка")
+  }
+}
 
+const showMessage = (msg) => {
+  message.value = msg;
+  messageVisible.value = true;
+  setTimeout(() => {
+    messageVisible.value = false;
+  }, 2000);
 }
 </script>
 
