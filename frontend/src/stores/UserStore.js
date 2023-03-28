@@ -27,6 +27,7 @@ export const useUserStore = defineStore('userStore', () => {
         try {
             const response = await AuthService.registration(email, password, username);
             localStorage.setItem('token', response.data.accessToken);
+            return response.data
         } catch (e) {
             console.log(e.response?.data?.message);
         }
@@ -67,6 +68,14 @@ export const useUserStore = defineStore('userStore', () => {
         }
     }
 
+    const deleteUser = async (id) => {
+        try {
+            const response = await UserService.deleteUser(id)
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
     const getUsers = async () => {
         try {
             const response = await UserService.getUsers()
@@ -91,7 +100,8 @@ export const useUserStore = defineStore('userStore', () => {
         logout,
         checkAuth,
         getUsers,
-        updateUser
+        updateUser,
+        deleteUser
     }
 })
 

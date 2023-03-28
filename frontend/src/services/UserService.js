@@ -8,4 +8,8 @@ export default class UserService {
     static async updateUser(userData) {
         return api.put('/profile', userData)
     }
+
+    static async deleteUser(id) {
+        return api.delete(`/profile/${id}`)
+    }
 }

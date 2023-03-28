@@ -14,6 +14,7 @@
         <div class="profile-menu">
           <Button @click="saveEdit" style="margin-bottom: 10px">Save</Button>
           <Button @click="isEdit = false">Cancel</Button>
+          <Button @click="deleteUser" class="delete-button">Delete profile</Button>
         </div>
       </div>
 
@@ -55,7 +56,9 @@
       </div>
     </div>
     <div v-else>
-      <AddBoardModal/>
+      <div v-if="!isLoading">
+        <AddBoardModal/>
+      </div>
     </div>
   </div>
 </template>
@@ -107,9 +110,18 @@ const saveEdit = () => {
   isLoading.value = false
 }
 
-const logout = () => {
-  userStore.logout()
-  router.push('/')
+const logout = async () => {
+  isLoading.value = true
+  await userStore.logout()
+  userStore.users = []
+  boardStore.boards = []
+  await router.push('/')
+  isLoading.value = false
+}
+
+const deleteUser = async () => {
+  await userStore.deleteUser(userStore.currentUser.id)
+  await logout()
 }
 </script>
 
@@ -174,5 +186,11 @@ const logout = () => {
 .boards-container {
   display: flex;
   justify-content: space-between;
+}
+
+.delete-button {
+  border-color: red;
+  color: red;
+  margin-top: 40px;
 }
 </style>
