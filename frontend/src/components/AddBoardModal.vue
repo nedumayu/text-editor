@@ -77,7 +77,7 @@ const createBoard = async () => {
 }
 
 onMounted(async() => {
-  if (userStore.users.length === 0) {
+  if (userStore.users.length === 0 && userStore.isAuth) {
     isLoading.value = true
     await userStore.getUsers()
     members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id)
