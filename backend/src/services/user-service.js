@@ -3,6 +3,7 @@ import BoardModel from "../models/board-model.js";
 import ApiError from "../exceptions/api-errors.js";
 import UserDto from "../dtos/user-dto.js";
 import UtilService from "./util-service.js";
+import ChangeModel from "../models/change-model.js";
 
 class UserService {
     async getUsers() {
@@ -28,13 +29,24 @@ class UserService {
     async deleteUser(id) {
         const user = await UserModel.findByIdAndDelete(id)
         if (user.boards) {
-            for (const boardId of user.boards) {
-                const board = await BoardModel.findById(boardId)
-                if (board.members.includes(boardId.toString())) {
-                    board.members = board.members.filter(idx => idx.toString() !== user.id.toString())
+            await ChangeModel.deleteMany({user: id})
+            const boards = await BoardModel.find()
+            for (const board of boards) {
+                if (board.members.includes(id)) {
+                    board.members = board.members.filter(memb => memb.toString() !== id)
                     board.save()
                 }
+                if (board.author.toString() === id) {
+                    if (board.members) {
+                        for (const member of board.members) {
+                            const user = await UserModel.findById(member)
+                            user.boards = user.boards.filter(bd => bd.toString() !== board._id.toString())
+                            user.save()
+                        }
+                    }
+                }
             }
+            await BoardModel.deleteMany({author: id})
         }
         return user
     }
