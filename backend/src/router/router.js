@@ -13,13 +13,13 @@ router.post(
     body('password').isLength({min: 3, max: 30}),
     AuthController.registration
 )
-router.post('/login', AuthMiddleware, AuthController.login)
+router.post('/login', AuthController.login)
 router.post('/logout', AuthMiddleware, AuthController.logout)
 router.get('/refresh', AuthController.refresh)
 
 router.get('/users', AuthMiddleware, UserController.getUsers)
 router.put('/profile', AuthMiddleware, UserController.updateUser)
-router.delete('/profile', AuthMiddleware, UserController.deleteUser)
+router.delete('/profile/:id', AuthMiddleware, UserController.deleteUser)
 
 router.get('/boards', BoardController.getBoards)
 router.post('/boards', AuthMiddleware,BoardController.addBoard)

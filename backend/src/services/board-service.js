@@ -90,6 +90,7 @@ class BoardService {
         const author = await UserModel.findById(board.author)
         author.boards = author.boards.filter(boardId => boardId.toString() !== id)
         author.save()
+        await ChangeModel.deleteMany({board: id})
         const deletedBoard = await BoardModel.findByIdAndDelete(id)
         return deletedBoard
     }
