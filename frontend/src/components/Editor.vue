@@ -80,7 +80,7 @@ const saveContent = async () => {
     members: memberIds,
     content: newContent.value
   }
-  await boardStore.updateBoard(route.params.id, updatedBoard)
+  await boardStore.updateBoard(boardStore.currentBoard.id, updatedBoard)
   isLoading.value = false
 }
 
@@ -100,7 +100,7 @@ const commitChanges = async () => {
       user: userStore.currentUser.id,
       content: commit.value || 'Добавлено новое изменение',
     }
-    const change = await boardStore.addChange(route.params.id, newChange);
+    const change = await boardStore.addChange(boardStore.currentBoard.id, newChange);
     await saveContent()
     props.board.changes.push({
       id: change._id,
