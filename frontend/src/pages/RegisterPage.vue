@@ -1,10 +1,10 @@
 <template>
   <div>
-    <form class="register-form">
-      <h1>Welcome aboard</h1>
-      <Input class="login-input" v-model="username" :type="textType" placeholder="Username"/>
-      <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
-      <Input class="login-input" v-model="password" :type="passType" placeholder="Password"/>
+    <form class="flex flex-col w-96 my-12 mx-auto space-y-4">
+      <h1 class="mb-4 font-thin text-center text-4xl text-primary">Welcome aboard</h1>
+      <Input v-model="username" :type="textType" placeholder="Username"/>
+      <Input v-model="email" :type="textType" placeholder="E-mail"/>
+      <Input v-model="password" :type="passType" placeholder="Password"/>
       <Button @click="createUser">Sign up</Button>
     </form>
     <Toast :show="messageVisible">
@@ -51,16 +51,5 @@ const showMessage = (msg) => {
 </script>
 
 <style scoped>
-.register-form {
-  width: 350px;
-  margin: 50px auto;
-  display: flex;
-  flex-direction: column;
-}
 
-.register-form h1 {
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: lighter;
-}
 </style>

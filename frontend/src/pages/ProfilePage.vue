@@ -1,44 +1,39 @@
 <template>
-  <div class="profile">
-    <div class="profile-content">
+  <div class="py-4 px-10 grid grid-cols-[320px_1fr] gap-24">
+    <div class="bg-base-100 p-8 flex flex-col rounded-xl">
       <div v-if="isEdit">
-        <div class="profile-info">
-          <div>
-            <img src="../assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
-          </div>
+        <div class="mb-4">
+          <img src="../assets/profile-Icon.png" class="w-full h-full rounded-xl bg-white mx-auto mb-4" alt="Аватар"/>
           <Label>username</Label>
-          <Input class="edit-input" v-model="username" v-focus/>
+          <Input class="w-full mb-3 bg-white" v-model="username" v-focus/>
           <Label>e-mail</Label>
-          <Input class="edit-input" v-model="email"/>
+          <Input class="w-full mb-3 bg-white" v-model="email"/>
         </div>
-        <div class="profile-menu">
-          <Button @click="saveEdit" style="margin-bottom: 10px">Save</Button>
+        <div class="flex flex-col mb-0">
+          <Button @click="saveEdit" class="btn-active btn-secondary mb-2">Save</Button>
           <Button @click="isEdit = false">Cancel</Button>
-          <Button @click="deleteUser" class="delete-button">Delete profile</Button>
+          <Button @click="deleteUser" class="delete-button btn-active btn-accent mt-10">Delete profile</Button>
         </div>
       </div>
 
       <div v-if="!isEdit && !isLoading">
-        <div class="profile-info">
-          <div>
-            <img src="../assets/profile-Icon.png" class="profile-avatar" alt="Аватар"/>
-          </div>
-          <h3>{{ userStore.currentUser.username }}</h3>
+        <div class="mb-4 h-50">
+          <img src="../assets/profile-Icon.png" class="w-full h-full rounded-xl bg-white mx-auto mb-4 opacity-50" alt="Аватар"/>
+          <h3 class="mb-2 font-bold text-lg uppercase">{{ userStore.currentUser.username }}</h3>
           <div>{{ userStore.currentUser.email }}</div>
         </div>
-        <div class="profile-menu">
-          <Button @click="isEdit = true" style="margin-bottom: 10px">Edit info</Button>
+        <div class="flex flex-col">
+          <Button @click="isEdit = true" class="mb-2">Edit info</Button>
           <Button @click="logout">Log out</Button>
         </div>
       </div>
     </div>
-
     <div v-if="!isLoading && userStore.currentUser.boards.length > 0">
-      <div class="boards-container">
-        <div class="boards-header">
+      <div class="flex justify-between">
+        <div class="flex flex-wrap mb-2">
           <Input
               v-model="searchQuery"
-              class="search-input"
+              class="w-64 mr-4 mb-2"
               placeholder="Search..."
           />
           <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
@@ -47,7 +42,8 @@
         </div>
         <AddBoardModal/>
       </div>
-      <div class="profile-boards">
+
+      <div class="flex flex-wrap">
         <Board
             v-for="board of searchedElements"
             :key="board.id"
@@ -126,71 +122,5 @@ const deleteUser = async () => {
 </script>
 
 <style scoped>
-.profile {
-  padding: 20px 40px;
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 100px;
-}
 
-.profile-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-info {
-  margin-bottom: 20px;
-}
-
-.profile-info h3 {
-  margin-bottom: 10px;
-}
-
-.profile-menu {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-avatar {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 1px solid black;
-  margin-bottom: 10px;
-}
-
-.profile-boards {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.edit-input {
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 15px;
-}
-
-.boards-header {
-  display: flex;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  width: 270px;
-  margin-right: 20px;
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-.boards-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.delete-button {
-  border-color: red;
-  color: red;
-  margin-top: 40px;
-}
 </style>

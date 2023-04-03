@@ -3,12 +3,13 @@
     <div v-if="userStore.loading"></div>
     <div v-else>
       <Navbar/>
-      <div class="main">
+      <div class="mx-auto w-11/12">
         <router-view v-slot=" {Component} ">
           <transition name="fade" mode="out-in">
             <component :is="Component"/>
           </transition>
         </router-view>
+
       </div>
     </div>
   </div>
@@ -21,10 +22,6 @@ const userStore = useUserStore()
 </script>
 
 <style scoped>
-.main {
-  margin: 0 30px;
-}
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity .2s ease-out;
 }

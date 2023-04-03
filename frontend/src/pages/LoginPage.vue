@@ -1,9 +1,9 @@
 <template>
   <div>
-    <form class="register-form">
-      <h1>Sign in to TextEditor</h1>
-      <Input class="login-input" v-model="email" :type="textType" placeholder="E-mail"/>
-      <Input class="login-input" v-model="password" :type="passType" placeholder="Password"/>
+    <form class="flex flex-col w-96 my-12 mx-auto space-y-4">
+      <h1 class="mb-4 font-thin text-center text-4xl text-primary">Sign in to [<span class="text-secondary-focus">textEditor</span>]</h1>
+      <Input v-model="email" :type="textType" placeholder="E-mail"/>
+      <Input v-model="password" :type="passType" placeholder="Password"/>
       <Button @click="login">Sign in</Button>
     </form>
     <Toast :show="messageVisible">
@@ -55,5 +55,9 @@ const showMessage = (msg) => {
   margin-bottom: 20px;
   text-align: center;
   font-weight: lighter;
+}
+
+.login-input {
+  margin-bottom: 15px;
 }
 </style>
