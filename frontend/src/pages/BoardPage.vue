@@ -29,11 +29,11 @@
         <Label>status</Label>
         <div class="edit-status">
           <div class="status-item">
-            <input type="radio" id="active" v-model="isActive" :value="true">
+            <input type="radio" class="radio radio-primary" id="active" v-model="isActive" :value="true">
             <label for="active">Active</label>
           </div>
           <div class="status-item">
-            <input type="radio" id="finished" v-model="isActive" :value="false">
+            <input type="radio" class="radio radio-primary" id="finished" v-model="isActive" :value="false">
             <label for="finished">Finished</label>
           </div>
         </div>

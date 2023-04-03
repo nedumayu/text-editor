@@ -1,5 +1,5 @@
 <template>
-  <select class="select" :value="modelValue" @change="changeOption">
+  <select class="select w-52 mr-4" :value="modelValue" @change="changeOption">
     <option value="" disabled>Sort boards by...</option>
     <option
         v-for="option in options"
@@ -32,8 +32,5 @@ export default {
 </script>
 
 <style scoped>
-.select {
-  width: 200px;
-  margin-right: 20px;
-}
+
 </style>
