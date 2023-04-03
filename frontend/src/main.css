@@ -1,24 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
+    background: white;
+    height: 100vh;
 }
 
-main {
-    max-width: 900px;
-    margin: auto;
-}
 
 .ProseMirror-focused {
     outline: none;
-}
-
-.login-input {
-    margin-bottom: 15px;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    margin: 0;
 }
