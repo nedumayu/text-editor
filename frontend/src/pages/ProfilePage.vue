@@ -33,7 +33,7 @@
         <div class="flex flex-wrap mb-2">
           <Input
               v-model="searchQuery"
-              class="w-64 mr-4 mb-2"
+              class="w-60 mr-4 mb-2"
               placeholder="Search..."
           />
           <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->

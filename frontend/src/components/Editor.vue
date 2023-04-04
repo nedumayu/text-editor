@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="editor" class="editor">
-      <MenuBar class="editor__header" :editor="editor"/>
+    <div v-if="editor" class="editor shadow-2xl shadow-base-300 text-accent-content border border-base-100">
+      <MenuBar class="editor__header border-b-2 border-base-100" :editor="editor"/>
       <EditorContent class="editor__content" :editor="editor" v-focus/>
       <div v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
       || props.board.author.id === userStore.currentUser.id)" class="editor__footer">
@@ -25,11 +25,9 @@ import {Highlight} from "@tiptap/extension-highlight";
 import {TaskItem} from "@tiptap/extension-task-item";
 import TaskList from '@tiptap/extension-task-list';
 import {useUserStore} from "../stores/UserStore.js";
-import {useRoute} from "vue-router";
 
 const boardStore = useBoardStore();
 const userStore = useUserStore();
-const route = useRoute();
 
 const props = defineProps({
   board: {
@@ -142,9 +140,7 @@ const showMessage = (msg) => {
 .editor {
   display: flex;
   flex-direction: column;
-  color: #0D0D0D;
   background-color: #FFF;
-  border: 3px solid #0D0D0D;
   border-radius: 0.75rem;
   min-height: 80vh;
 }
@@ -155,7 +151,6 @@ const showMessage = (msg) => {
   flex: 0 0 auto;
   flex-wrap: wrap;
   padding: 0.25rem;
-  border-bottom: 3px solid #0D0D0D;
 }
 
 .editor__content {

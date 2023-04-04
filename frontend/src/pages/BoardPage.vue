@@ -1,21 +1,20 @@
 <template>
-  <div class="board" v-if="!isLoading">
+  <div class="grid grid-cols-[2fr_1fr] gap-4" v-if="!isLoading">
     <Editor :board="boardStore.currentBoard"/>
-
-    <div class="board-info">
-      <div class="board-header">
-        <h1>BOARD #{{ boardStore.currentBoard.id.slice(20,25) }}</h1>
+    <div class="bg-base-100 h-[80.5vh] p-7 rounded-xl text-primary-focus">
+      <div class="flex justify-between items-center">
+        <h1 class="font-bold text-4xl mb-4 max-w-72 text-accent-content">BOARD #{{ boardStore.currentBoard.id.slice(20,25) }}</h1>
         <div
-            class="board-buttons"
+            class="flex"
             v-if="boardStore.currentBoard.author.id === userStore.currentUser.id"
         >
-          <button class="menu-item" @click="isEdit = true" title="Edit board">
-            <svg class="remix">
+          <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content" @click="isEdit = true" title="Edit board">
+            <svg class="remix w-full h-full fill-current">
               <use :xlink:href="`${remixiconUrl}#ri-pencil-line`"/>
             </svg>
           </button>
-          <button class="menu-item" @click="deleteBoard" title="Delete board">
-            <svg class="remix">
+          <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content" @click="deleteBoard" title="Delete board">
+            <svg class="remix w-full h-full fill-current">
               <use :xlink:href="`${remixiconUrl}#ri-delete-bin-line`"/>
             </svg>
           </button>
@@ -24,15 +23,15 @@
 
       <div v-if="isEdit">
         <Label>title</Label>
-        <Input v-model="title" v-focus style="margin-bottom: 20px"/>
+        <Input v-model="title" v-focus class="mb-4 bg-white"/>
 
         <Label>status</Label>
-        <div class="edit-status">
-          <div class="status-item">
+        <div class="flex mb-4 space-x-3">
+          <div class="grid grid-cols-[1fr_2fr] gap-1 content-center">
             <input type="radio" class="radio radio-primary" id="active" v-model="isActive" :value="true">
             <label for="active">Active</label>
           </div>
-          <div class="status-item">
+          <div class="grid grid-cols-[1fr_2fr] gap-1 content-center">
             <input type="radio" class="radio radio-primary" id="finished" v-model="isActive" :value="false">
             <label for="finished">Finished</label>
           </div>
@@ -45,20 +44,20 @@
             @setMembers="setMembers"
         />
 
-        <div class="profile-menu">
-          <Button @click="saveEdit" style="margin-right: 10px">Save</Button>
+        <div class="flex space-x-4">
+          <Button @click="saveEdit">Save</Button>
           <Button @click="cancel">Cancel</Button>
         </div>
       </div>
 
       <div v-else>
-        <h3 style="margin-bottom: 20px">
+        <h3 class="mb-4 text-2xl text-bold">
           {{ boardStore.currentBoard.title }}
         </h3>
         <div>
           Author: {{ boardStore.currentBoard.author.username }}
         </div>
-        <div class="board-date">
+        <div class="text-base-300">
           {{ transformDate(boardStore.currentBoard.date) }}
         </div>
         <BoardMembers :members="boardStore.currentBoard.members" v-if="boardStore.currentBoard.members.length > 0"/>
@@ -163,72 +162,5 @@ const cancel = () => {
 </script>
 
 <style scoped>
-.board {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-}
 
-.board-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.board-header h1 {
-  margin-bottom: 20px;
-  max-width: 300px
-}
-
-.board-buttons {
-  display: flex;
-}
-
-.menu-item {
-  width: 1.75rem;
-  height: 1.75rem;
-  color: #0D0D0D;
-  border: 1px solid black;
-  background-color: transparent;
-  border-radius: 0.4rem;
-  padding: 0.25rem;
-  margin-right: 0.25rem;
-  cursor: pointer;
-}
-
-.menu-item svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
-}
-
-.menu-item:hover {
-  color: #FFF;
-  background-color: #0D0D0D;
-}
-
-.board-info {
-  box-sizing: border-box;
-  border: 1px solid black;
-  height: 80.5vh;
-  padding: 20px;
-  border-radius: 0.75rem;
-}
-
-.profile-menu {
-  display: flex;
-}
-
-.board-date {
-  color: rgba(0, 0, 0, 0.43);
-}
-
-.edit-status {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-.status-item {
-  margin-right: 10px;
-}
 </style>

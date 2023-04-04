@@ -1,6 +1,5 @@
 <template>
   <div class="members-container">
-    <h4>MEMBERS:</h4>
     <div class="board-members">
       <div class="board-member" v-for="member of members" :key="member.id">
         {{ member.username }}
@@ -28,7 +27,7 @@ const props = defineProps({
 }
 
 .board-member {
-  background: rgba(215, 215, 215, 0.4);
+  background: white;
   padding: 5px 10px;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -37,8 +36,9 @@ const props = defineProps({
 }
 
 .board-member:hover {
-  outline: 1px solid black;
+  outline: 1px solid #b7b7b7;
   background: white;
+  color: gray;
 }
 
 .members-container {

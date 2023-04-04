@@ -2,11 +2,11 @@
   <Button
       v-if="userStore.isAuth"
       @click="modalVisible = true"
-      class="new-board-button"
+      class="new-board-button btn-primary"
   >
     New Board
   </Button>
-  <div v-else></div>
+<!--  <label for="my-modal" v-if="userStore.isAuth" class="btn new-board-button">New Board</label>-->
 
   <Modal v-model:show="modalVisible">
     <div class="new-board-form">
@@ -14,16 +14,19 @@
       <Input
           v-model="title"
           placeholder="Название"
-          class="search-input"
+          class="search-input w-full"
           v-focus
       />
       <h3>Участники:</h3>
-      <EditBoardMembers v-if="!isLoading && members.length > 0"
+      <EditBoardMembers v-if="!isLoading && members.length > 0 "
           :members="members"
           :board-members="boardMembers"
           @setMembers="setMembers"
       />
-      <Button @click="createBoard">Create</Button>
+      <Button @click="createBoard" class="create-button">Create</Button>
+<!--      <div class="modal-action">-->
+<!--        <label for="my-modal" class="btn" @click="createBoard">Create</label>-->
+<!--      </div>-->
     </div>
   </Modal>
   <Toast :show="messageVisible">
@@ -89,8 +92,6 @@ onMounted(async() => {
 <style scoped>
 .new-board-button {
   margin-left: auto;
-  min-width: 130px;
-  height: 40px;
 }
 
 .new-board-form {
@@ -109,5 +110,9 @@ onMounted(async() => {
 
 .search-input {
   margin-bottom: 20px;
+}
+
+.create-button {
+  width: 100px;
 }
 </style>

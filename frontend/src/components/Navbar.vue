@@ -1,7 +1,7 @@
 <template>
   <div class="w-full shadow-lg">
     <div class="navbar mx-auto w-11/12 mb-10 uppercase">
-      <div @click="$router.push('/')" class="font-bold mr-4 w-36 hover:opacity-70">
+      <div @click="$router.push('/')" class="font-bold mr-4 w-36 cursor-pointer hover:opacity-70">
         [text editor]
       </div>
       <div class="flex w-full justify-between ">

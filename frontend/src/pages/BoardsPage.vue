@@ -1,10 +1,10 @@
 <template>
   <div v-if="!isLoading">
-    <div class="boards-container" >
-      <div class="boards-header">
+    <div class="flex justify-between" >
+      <div class="flex flex-wrap mb-2">
         <Input
             v-model="searchQuery"
-            class="search-input"
+            class="w-60 mr-4 mb-2"
             placeholder="Search..."
         />
         <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
@@ -14,7 +14,7 @@
       <AddBoardModal/>
     </div>
 
-    <div class="board-items" >
+    <div class="flex flex-wrap" >
       <Board
           v-for="board of searchedElements"
           :key="board.id"
@@ -63,26 +63,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.board-items {
-  display: flex;
-  flex-wrap: wrap;
-}
 
-.boards-header {
-  display: flex;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  width: 270px;
-  margin-right: 20px;
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-.boards-container {
-  display: flex;
-  justify-content: space-between;
-}
 </style>
