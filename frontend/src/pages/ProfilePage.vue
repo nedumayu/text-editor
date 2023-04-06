@@ -1,33 +1,55 @@
 <template>
-  <div class="py-4 px-10 grid grid-cols-[320px_1fr] gap-24">
-    <div class="bg-base-100 p-8 flex flex-col rounded-xl">
-      <div v-if="isEdit">
-        <div class="mb-4">
-          <img src="../assets/profile-Icon.png" class="w-full h-full rounded-xl bg-white mx-auto mb-4" alt="Аватар"/>
-          <Label>username</Label>
-          <Input class="w-full mb-3 bg-white" v-model="username" v-focus/>
-          <Label>e-mail</Label>
-          <Input class="w-full mb-3 bg-white" v-model="email"/>
-        </div>
-        <div class="flex flex-col mb-0">
-          <Button @click="saveEdit" class="btn-active btn-secondary mb-2">Save</Button>
-          <Button @click="isEdit = false">Cancel</Button>
-          <Button @click="deleteUser" class="delete-button btn-active btn-accent mt-10">Delete profile</Button>
-        </div>
-      </div>
-
+  <div class="py-4 px-10 flex space-x-6 items-start">
+    <div class="bg-base-100 p-8 flex flex-col rounded-xl w-80">
+      <img
+          src="../assets/profile-Icon.png"
+          class="w-full h-full rounded-xl bg-white mx-auto mb-4"
+          alt="Аватар"
+      />
       <div v-if="!isEdit && !isLoading">
-        <div class="mb-4 h-50">
-          <img src="../assets/profile-Icon.png" class="w-full h-full rounded-xl bg-white mx-auto mb-4 opacity-50" alt="Аватар"/>
-          <h3 class="mb-2 font-bold text-lg uppercase">{{ userStore.currentUser.username }}</h3>
-          <div>{{ userStore.currentUser.email }}</div>
-        </div>
-        <div class="flex flex-col">
-          <Button @click="isEdit = true" class="mb-2">Edit info</Button>
+        <h3 class="mb-2 font-bold text-lg uppercase">{{ userStore.currentUser.username }}</h3>
+        <div>{{ userStore.currentUser.email }}</div>
+        <div class="flex flex-col w-64">
+          <Button
+              @click="isEdit = true"
+              class="mb-2 mt-4"
+          >Edit info
+          </Button>
           <Button @click="logout">Log out</Button>
         </div>
       </div>
+
+      <div v-if="isEdit">
+        <Label>username</Label>
+        <Input
+            class="w-full mb-3 bg-white"
+            v-model="username"
+            v-focus
+        />
+        <Label>e-mail</Label>
+        <Input
+            class="w-full mb-3 bg-white"
+            v-model="email"
+        />
+        <div class="flex flex-col mb-0">
+          <Button
+              @click="saveEdit"
+              class="btn-active btn-secondary mb-2 w-64"
+          >Save
+          </Button>
+          <Button
+              @click="isEdit = false"
+          >Cancel
+          </Button>
+          <Button
+              @click="deleteUser"
+              class="delete-button btn-active btn-accent mt-10"
+          >Delete profile
+          </Button>
+        </div>
+      </div>
     </div>
+
     <div v-if="!isLoading && userStore.currentUser.boards.length > 0">
       <div class="flex justify-between">
         <div class="flex flex-wrap mb-2">
@@ -38,7 +60,10 @@
           />
           <!--      <Search :filteredElements="filteredElements" @setSearch="setSearch"/>-->
           <Sort :boards="userStore.currentUser.boards"/>
-          <Filter :boards="userStore.currentUser.boards" @on-change-filter="setFilteredElements"/>
+          <Filter
+              :boards="userStore.currentUser.boards"
+              @on-change-filter="setFilteredElements"
+          />
         </div>
         <AddBoardModal/>
       </div>

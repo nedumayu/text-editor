@@ -1,19 +1,28 @@
 <template>
-  <div class="grid grid-cols-[2fr_1fr] gap-4" v-if="!isLoading">
+  <div class="grid grid-cols-[2fr_1fr] gap-4 mb-5" v-if="!isLoading">
     <Editor :board="boardStore.currentBoard"/>
-    <div class="bg-base-100 h-[80.5vh] p-7 rounded-xl text-primary-focus">
+    <div class="bg-base-100 p-7 rounded-xl text-primary-focus">
       <div class="flex justify-between items-center">
-        <h1 class="font-bold text-4xl mb-4 max-w-72 text-accent-content">BOARD #{{ boardStore.currentBoard.id.slice(20,25) }}</h1>
+        <h1 class="font-bold text-2xl mb-4 max-w-72 text-accent-content">
+          BOARD #{{ boardStore.currentBoard.id.slice(20,25) }}
+        </h1>
         <div
             class="flex"
             v-if="boardStore.currentBoard.author.id === userStore.currentUser.id"
         >
-          <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content" @click="isEdit = true" title="Edit board">
+          <button
+              class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content"
+                  @click="isEdit = true"
+                  title="Edit board"
+          >
             <svg class="remix w-full h-full fill-current">
               <use :xlink:href="`${remixiconUrl}#ri-pencil-line`"/>
             </svg>
           </button>
-          <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content" @click="deleteBoard" title="Delete board">
+          <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content"
+                  @click="deleteBoard"
+                  title="Delete board"
+          >
             <svg class="remix w-full h-full fill-current">
               <use :xlink:href="`${remixiconUrl}#ri-delete-bin-line`"/>
             </svg>
@@ -23,10 +32,10 @@
 
       <div v-if="isEdit">
         <Label>title</Label>
-        <Input v-model="title" v-focus class="mb-4 bg-white"/>
+        <Input v-model="title" v-focus class="mb-5 bg-white"/>
 
         <Label>status</Label>
-        <div class="flex mb-4 space-x-3">
+        <div class="flex mb-5 space-x-3">
           <div class="grid grid-cols-[1fr_2fr] gap-1 content-center">
             <input type="radio" class="radio radio-primary" id="active" v-model="isActive" :value="true">
             <label for="active">Active</label>
