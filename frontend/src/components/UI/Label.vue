@@ -1,5 +1,5 @@
 <template>
-  <div class="label">
+  <div class="uppercase text-xs font-bold	mb-3">
     <slot></slot>
   </div>
 </template>
@@ -11,10 +11,5 @@ export default {
 </script>
 
 <style scoped>
-.label {
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
+
 </style>

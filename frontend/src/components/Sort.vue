@@ -2,7 +2,7 @@
     <Select
         v-model="selectedSort"
         :options="sortOptions"
-        class="sorting"
+        class="h-10 mb-3"
     />
 </template>
 
@@ -28,8 +28,5 @@ const {selectedSort} = useSorting(props.boards);
 </script>
 
 <style scoped>
-.sorting {
-  height: 40px;
-  margin-bottom: 10px;
-}
+
 </style>

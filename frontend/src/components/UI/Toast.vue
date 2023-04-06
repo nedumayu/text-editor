@@ -1,6 +1,8 @@
 <template>
-  <div class="toast" v-if="show">
-    <slot></slot>
+  <div class="toast toast-top toast-end" v-if="show">
+    <div class="alert alert-info">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -17,13 +19,5 @@ export default {
 </script>
 
 <style scoped>
-.toast {
-  position: fixed;
-  top: 70px;
-  right: 0;
-  width: 200px;
-  background: rgba(13, 13, 13, 0.87);
-  color: white;
-  padding: 20px;
-}
+
 </style>

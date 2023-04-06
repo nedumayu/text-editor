@@ -7,10 +7,11 @@ body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
-    background: white;
-    height: 100vh;
 }
 
+:root, [data-theme] {
+    background: white;
+}
 
 .ProseMirror-focused {
     outline: none;

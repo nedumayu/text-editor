@@ -2,28 +2,28 @@
   <Button
       v-if="userStore.isAuth"
       @click="modalVisible = true"
-      class="new-board-button btn-primary"
+      class="ml-auto btn-primary"
   >
     New Board
   </Button>
 <!--  <label for="my-modal" v-if="userStore.isAuth" class="btn new-board-button">New Board</label>-->
 
   <Modal v-model:show="modalVisible">
-    <div class="new-board-form">
-      <h1 class="modal-title">Create new board!</h1>
+    <div class="flex flex-col w-[460px] text-primary">
+      <h1 class="mb-5 font-bold text-3xl">Create new board!</h1>
       <Input
           v-model="title"
-          placeholder="Название"
-          class="search-input w-full"
+          placeholder="Title"
+          class="mb-5 w-full"
           v-focus
       />
-      <h3>Участники:</h3>
-      <EditBoardMembers v-if="!isLoading && members.length > 0 "
+      <Label class="mb-1 text-sm">members:</Label>
+      <EditBoardMembers v-if="!isLoading"
           :members="members"
           :board-members="boardMembers"
           @setMembers="setMembers"
       />
-      <Button @click="createBoard" class="create-button">Create</Button>
+      <Button @click="createBoard" class="w-24">Create</Button>
 <!--      <div class="modal-action">-->
 <!--        <label for="my-modal" class="btn" @click="createBoard">Create</label>-->
 <!--      </div>-->
@@ -90,29 +90,4 @@ onMounted(async() => {
 </script>
 
 <style scoped>
-.new-board-button {
-  margin-left: auto;
-}
-
-.new-board-form {
-  display: flex;
-  width: 400px;
-  flex-direction: column;
-}
-
-.new-board-form h3 {
-  margin-bottom: 10px;
-}
-
-.modal-title {
-  margin-bottom: 20px;
-}
-
-.search-input {
-  margin-bottom: 20px;
-}
-
-.create-button {
-  width: 100px;
-}
 </style>

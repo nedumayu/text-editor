@@ -2,7 +2,7 @@
   <input
       :value="modelValue"
       @input="updateInput"
-      class="input w-full"
+      class="input"
       type={{$attrs.inputType}}
       />
 </template>
