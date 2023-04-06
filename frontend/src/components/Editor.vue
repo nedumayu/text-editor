@@ -1,12 +1,51 @@
 <template>
   <div>
-    <div v-if="editor" class="editor shadow-2xl shadow-base-300 text-accent-content border border-base-100">
-      <MenuBar class="editor__header border-b-2 border-base-100" :editor="editor"/>
-      <EditorContent class="editor__content" :editor="editor" v-focus/>
-      <div v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
-      || props.board.author.id === userStore.currentUser.id)" class="editor__footer">
-        <Input v-model="commit" placeholder="Enter your message" class="commit"/>
-        <Button v-if="!isLoading" class="commit-button" @click="commitChanges">Commit</Button>
+    <div
+        v-if="editor"
+        class="flex flex-col rounded-md min-h-[80vh] shadow-2xl shadow-base-300 text-accent-content border border-base-100"
+    >
+      <div v-if="isEditorMode">
+        <MenuBar
+            class="flex items-center flex-[0 0 auto] flex-wrap p-1 border-b-2 border-base-100"
+            :editor="editor"
+        />
+
+        <EditorContent
+            class="py-5 px-4 flex-auto overflow-x-hidden overflow-y-auto"
+            :editor="editor"
+        />
+      </div>
+      <div v-else>
+        <EditorContent
+            class="py-5 px-4 flex-auto overflow-x-hidden overflow-y-auto"
+            :editor="editor"
+        />
+      </div>
+
+      <div
+          v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
+    || props.board.author.id === userStore.currentUser.id)"
+          class="m-3 mt-auto flex"
+      >
+        <Input
+            v-if="isEditorMode"
+            v-model="commit"
+            placeholder="Enter your message"
+            class="w-52"
+        />
+        <Button
+            v-if="!isLoading & isEditorMode"
+            class="ml-3 mr-3"
+            @click="commitChanges"
+        >
+          Commit
+        </Button>
+        <button
+            @click="toggleMode"
+            class="btn btn-primary ml-auto"
+        >
+          Watch result
+        </button>
       </div>
     </div>
     <Toast :show="messageVisible">
@@ -44,6 +83,9 @@ const isLoading = ref(false)
 
 const message = ref('');
 const messageVisible = ref(false);
+const isEditorMode = ref(false)
+const condition = ref(!!(props.board.members.some(member => member.id === userStore.currentUser.id)
+    || props.board.author.id === userStore.currentUser.id))
 
 const wasEdit = ref(false);
 let isCommited = false;
@@ -63,11 +105,9 @@ const editor = new Editor({
     TaskItem,
 
   ],
-  editable: !!(props.board.members.some(member => member.id === userStore.currentUser.id)
-      || props.board.author.id === userStore.currentUser.id),
+  editable: !condition.value,
 });
 
-editor.commands.focus('end')
 
 const saveContent = async () => {
   isLoading.value = true
@@ -80,6 +120,13 @@ const saveContent = async () => {
   }
   await boardStore.updateBoard(boardStore.currentBoard.id, updatedBoard)
   isLoading.value = false
+}
+
+const toggleMode = () => {
+  isEditorMode.value = !isEditorMode.value
+  editor.setOptions({editable: condition.value});
+  condition.value = !condition.value
+  editor.commands.focus('end')
 }
 
 onBeforeUnmount(async () => {
@@ -126,46 +173,6 @@ const showMessage = (msg) => {
 }
 </script>
 
-<style scoped>
-.commit {
-  border-radius: 20px;
-  width: 200px;
-}
-
-.commit-button {
-  margin-left: 10px;
-  border-radius: 20px;
-}
-
-.editor {
-  display: flex;
-  flex-direction: column;
-  background-color: #FFF;
-  border-radius: 0.75rem;
-  min-height: 80vh;
-}
-
-.editor__header {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-  flex-wrap: wrap;
-  padding: 0.25rem;
-}
-
-.editor__content {
-  padding: 1.25rem 1rem;
-  flex: 1 1 auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.editor__footer {
-  margin: 0 0 10px 10px;
-}
-</style>
-
 <style lang="scss">
 .ProseMirror {
   > * + * {
@@ -184,6 +191,11 @@ const showMessage = (msg) => {
   h5,
   h6 {
     line-height: 1.1;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
   }
 
   code {
@@ -207,7 +219,7 @@ const showMessage = (msg) => {
   }
 
   mark {
-    background-color: #FAF594;
+    background-color: #fae994;
   }
 
   img {
