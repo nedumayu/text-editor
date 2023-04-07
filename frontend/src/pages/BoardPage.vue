@@ -1,18 +1,20 @@
 <template>
-  <div class="grid grid-cols-[2fr_1fr] gap-4 mb-5" v-if="!isLoading">
+  <div class="grid grid-cols-[1fr_500px] gap-4 mb-5" v-if="!isLoading">
     <Editor :board="boardStore.currentBoard"/>
     <div class="bg-base-100 p-7 rounded-xl text-primary-focus">
-      <div class="flex justify-between items-center">
-        <h1 class="font-bold text-2xl mb-4 max-w-72 text-accent-content">
-          BOARD #{{ boardStore.currentBoard.id.slice(20,25) }}
-        </h1>
-        <div
-            class="flex"
+      <div class="flex justify-between items-start" v-if="isCommitMode">
+        <h3 class="mb-4 text-2xl text-bold" v-if="!isEdit">
+          {{ boardStore.currentBoard.title }}
+        </h3>
+        <div v-else>
+          <Label>title</Label>
+          <Input v-model="title" v-focus class="mb-5 bg-white"/>
+        </div>
+        <div class="flex"
             v-if="boardStore.currentBoard.author.id === userStore.currentUser.id"
         >
-          <button
-              class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content"
-                  @click="isEdit = true"
+          <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content"
+                  @click="isEdit = !isEdit"
                   title="Edit board"
           >
             <svg class="remix w-full h-full fill-current">
@@ -31,9 +33,6 @@
       </div>
 
       <div v-if="isEdit">
-        <Label>title</Label>
-        <Input v-model="title" v-focus class="mb-5 bg-white"/>
-
         <Label>status</Label>
         <div class="flex mb-5 space-x-3">
           <div class="grid grid-cols-[1fr_2fr] gap-1 content-center">
@@ -60,17 +59,22 @@
       </div>
 
       <div v-else>
-        <h3 class="mb-4 text-2xl text-bold">
-          {{ boardStore.currentBoard.title }}
-        </h3>
-        <div>
+        <div v-if="isCommitMode">
           Author: {{ boardStore.currentBoard.author.username }}
         </div>
-        <div class="text-base-300">
+        <div class="text-base-300" v-if="isCommitMode">
           {{ transformDate(boardStore.currentBoard.date) }}
         </div>
-        <BoardMembers :members="boardStore.currentBoard.members" v-if="boardStore.currentBoard.members.length > 0"/>
-        <Commits :changes="boardStore.currentBoard.changes" v-if="boardStore.currentBoard.changes.length > 0"/>
+        <BoardMembers
+            :members="boardStore.currentBoard.members"
+            v-if="boardStore.currentBoard.members.length > 0 && isCommitMode"
+            class="mb-8"
+        />
+        <Commits
+            :changes="boardStore.currentBoard.changes"
+            v-if="boardStore.currentBoard.changes.length > 0 "
+            @set-mode="setMode"
+        />
       </div>
     </div>
   </div>
@@ -82,7 +86,7 @@ import Editor from "../components/Editor.vue";
 import {useRoute, useRouter} from 'vue-router'
 import {useUserStore} from "../stores/UserStore.js";
 import remixiconUrl from 'remixicon/fonts/remixicon.symbol.svg'
-import {onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import BoardMembers from "../components/BoardMembers.vue";
 import Commits from "../components/Commits.vue";
 import EditBoardMembers from "../components/EditBoardMembers.vue";
@@ -96,6 +100,7 @@ const router = useRouter();
 
 const isEdit = ref(false)
 const isLoading = ref(true)
+const isCommitMode = ref(true)
 
 const boardMembers = ref([])
 const members = ref([])
@@ -118,6 +123,10 @@ onMounted(async () => {
 const setMembers = ([m, b]) => {
   members.value = m;
   boardMembers.value = b;
+}
+
+const setMode = (mode) => {
+  isCommitMode.value = mode
 }
 
 const deleteBoard = async () => {
@@ -160,8 +169,8 @@ const saveEdit = async () => {
 const cancel = () => {
   title.value = boardStore.currentBoard.title;
   isActive.value = boardStore.currentBoard.isActive;
-  boardMembers.value = boardStore.currentBoard.members;
-  members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id);
+  boardMembers.value = boardStore.currentBoard.members
+  members.value = userStore.users.filter(member => member.id !== userStore.currentUser.id)
   boardMembers.value.forEach(b => {
     members.value = members.value.filter(member => member.id !== b.id)
   })

@@ -7,6 +7,7 @@ import BoardService from "../services/BoardService.js";
 export const useBoardStore = defineStore('boardStore', () => {
     const boards = ref([]);
     const currentBoard = ref({})
+    const currentBoardId = ref(null)
 
     const getBoards = async() => {
         try {
@@ -69,6 +70,7 @@ export const useBoardStore = defineStore('boardStore', () => {
         deleteBoard,
         addChange,
         boards,
-        currentBoard
+        currentBoard,
+        currentBoardId
     }
 })
