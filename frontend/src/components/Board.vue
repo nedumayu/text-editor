@@ -13,7 +13,7 @@
       </div>
       <BoardMembers :members="board.members" v-if="board.members.length > 0"/>
       <div v-else></div>
-      <Button class="w-36 btn-primary" @click="$router.push(`/boards/${board.id}`)">go to board</Button>
+      <Button class="w-36 btn-primary mt-auto" @click="$router.push(`/boards/${board.id}`)">go to board</Button>
     </div>
   </div>
 </template>

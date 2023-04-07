@@ -1,5 +1,5 @@
 <template>
-  <div class="py-4 px-10 flex space-x-6 items-start">
+  <div class="px-10 flex space-x-6 items-start">
     <div class="bg-base-100 p-8 flex flex-col rounded-xl w-80">
       <img
           src="../assets/profile-Icon.png"

@@ -3,7 +3,7 @@
     <div v-if="userStore.loading"></div>
     <div v-else>
       <Navbar/>
-      <div class="mx-auto w-11/12">
+      <div class="mx-auto w-11/12 mt-[-10px]">
         <router-view v-slot=" {Component} ">
           <transition name="fade" mode="out-in">
             <component :is="Component"/>

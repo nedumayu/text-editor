@@ -1,6 +1,5 @@
 <template>
-  <div @mousemove="emit('setMembers', [members, boardMembers])">
-
+  <div>
     <div class="flex flex-wrap mb-3 space-x-2">
       <div
           class="flex justify-between items-center border border-primary p-1 rounded-xl cursor-pointer"
@@ -8,8 +7,9 @@
           :key="member.id"
       >
         <div class="mr-2">{{ member.username }}</div>
-        <div class="w-5 h-5 bg-primary text-white rounded-full flex justify-center items-center pb-0.5 hover:bg-secondary-focus"
-             @click="deleteMember(member.id)">
+        <div
+            class="w-5 h-5 bg-primary text-white rounded-full flex justify-center items-center pb-0.5 hover:bg-secondary-focus"
+            @click="deleteMember(member.id)">
           ×
         </div>
       </div>
@@ -55,6 +55,7 @@ const userStore = useUserStore();
 const props = defineProps(['boardMembers', 'members'])
 const members = ref(props.members)
 const boardMembers = ref(props.boardMembers)
+const emit = defineEmits(['setMembers'])
 
 const addMemberToBoard = (id) => {
   const user = userStore.users.find(user => user.id === id);
@@ -64,20 +65,21 @@ const addMemberToBoard = (id) => {
     email: user.email
   });
   members.value = members.value.filter(member => member.id !== id);
+  emit('setMembers', [members, boardMembers])
 }
 
-const {searchQuery, searchedElements} = useSearching(members, 'username');
-
 const deleteMember = (id) => {
-  boardMembers.value = boardMembers.value.filter(member => member.id !== id);
   members.value.push({
     id: id,
     username: userStore.users.find(user => user.id === id).username,
     email: userStore.users.find(user => user.id === id).email
   });
+  boardMembers.value = boardMembers.value.filter(member => member.id !== id);
+  emit('setMembers', [members, boardMembers])
 }
 
-const emit = defineEmits(['setMembers'])
+const {searchQuery, searchedElements} = useSearching(members, 'username');
+
 </script>
 
 <style scoped>
