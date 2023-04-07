@@ -45,27 +45,29 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .menu-item {
-  width: 1.75rem;
-  height: 1.75rem;
-  color: #0D0D0D;
+  background: white;
   border: none;
-  background-color: transparent;
   border-radius: 0.4rem;
+  color: hsl(var(--p));
+  cursor: pointer;
+  height: 1.75rem;
   padding: 0.25rem;
   margin-right: 0.25rem;
-}
+  width: 1.75rem;
 
-.menu-item svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
-}
+  svg {
+    fill: currentColor;
+    height: 100%;
+    width: 100%;
+  }
 
-.menu-item .is-active, .menu-item:hover {
-  color: #FFF;
-  background-color: #0D0D0D;
+  &.is-active,
+  &:hover {
+    color: white;
+    background-color: hsl(var(--p));
+  }
 }
 </style>
 

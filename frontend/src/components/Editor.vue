@@ -11,13 +11,15 @@
         />
 
         <EditorContent
-            class="py-5 px-4 flex-auto overflow-x-hidden overflow-y-auto"
+            class="py-5 px-4 flex-auto overflow-hidden overflow-y-scroll h-[60vh]"
             :editor="editor"
         />
+        <!--            class="py-5 px-4 flex-auto overflow-x-hidden overflow-y-auto"-->
+
       </div>
       <div v-else>
         <EditorContent
-            class="py-5 px-4 flex-auto overflow-x-hidden overflow-y-auto"
+            class="py-5 px-4 flex-auto overflow-hidden overflow-y-scroll h-[70vh]"
             :editor="editor"
         />
       </div>
@@ -42,9 +44,9 @@
         </Button>
         <button
             @click="toggleMode"
-            class="btn btn-primary ml-auto"
+            class="btn btn-outline btn-primary ml-auto"
         >
-          Watch result
+          {{isEditorMode ? "read mode" : "edit mode"}}
         </button>
       </div>
     </div>
@@ -126,7 +128,7 @@ const toggleMode = () => {
   isEditorMode.value = !isEditorMode.value
   editor.setOptions({editable: condition.value});
   condition.value = !condition.value
-  editor.commands.focus('end')
+  editor.commands.focus('start')
 }
 
 onBeforeUnmount(async () => {
@@ -184,6 +186,14 @@ const showMessage = (msg) => {
     padding: 0 1rem;
   }
 
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
   h1,
   h2,
   h3,
@@ -194,7 +204,12 @@ const showMessage = (msg) => {
   }
 
   h1 {
-    font-size: 24px;
+    font-size: 30px;
+    font-weight: bold;
+  }
+
+  h2 {
+    font-size: 25px;
     font-weight: bold;
   }
 
@@ -204,7 +219,7 @@ const showMessage = (msg) => {
   }
 
   pre {
-    background: #0D0D0D;
+    background: hsl(var(--pf));
     color: #FFF;
     font-family: 'JetBrainsMono', monospace;
     padding: 0.75rem 1rem;
