@@ -1,7 +1,7 @@
 <template>
   <div>
-    <form class="flex flex-col w-96 my-12 mx-auto space-y-4">
-      <h1 class="mb-4 font-thin text-center text-4xl text-primary">Sign in to [<span class="text-secondary-focus">textEditor</span>]</h1>
+    <form class="flex flex-col w-96 my-12 mx-auto space-y-4" @keyup.enter="login">
+      <h1 class="mb-4 font-thin text-center text-4xl text-primary">Sign in to <span class="text-secondary-focus">[textEditor]</span></h1>
       <Input v-model="email" :type="textType" placeholder="E-mail"/>
       <Input v-model="password" :type="passType" placeholder="Password"/>
       <Button @click="login">Sign in</Button>

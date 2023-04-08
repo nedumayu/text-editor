@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="flex flex-col w-96 my-12 mx-auto space-y-4">
+    <form class="flex flex-col w-96 my-12 mx-auto space-y-4" @keyup.enter="createUser">
       <h1 class="mb-4 font-thin text-center text-4xl text-primary">Welcome aboard</h1>
       <Input v-model="username" :type="textType" placeholder="Username"/>
       <Input v-model="email" :type="textType" placeholder="E-mail"/>
