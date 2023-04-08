@@ -10,7 +10,7 @@ class BoardService {
         const board = await BoardModel.findById(id)
         const boardWithUser = await UtilService.getBoardUsers(board)
         const boardChanges = await UtilService.getBoardChanges(id)
-        return {...boardWithUser, content: board.content, isActive: board.isActive, changes: boardChanges}
+        return {...boardWithUser, content: board.content, changes: boardChanges}
     }
 
     async getBoards() {
@@ -42,8 +42,8 @@ class BoardService {
                 member.save()
             }
         }
-        const bb = await UtilService.getBoardUsers(board)
-        return bb
+        const newBoard = await UtilService.getBoardUsers(board)
+        return newBoard
     }
 
     async updateBoard(id, title, content, isActive, members) {
@@ -114,6 +114,34 @@ class BoardService {
                 board: new ObjectId(board)
             })
         return change
+    }
+
+    async checkEditing(id, isEditing) {
+        const board = await BoardModel.findById(id)
+        if (isEditing === "true") {
+            isEditing = true
+        } else if (isEditing === "false") {
+            isEditing = false
+        }
+
+        if(isEditing && !board.isEditing) {
+            board.isEditing = true
+            board.save()
+            return {message: "Ok to editing"}
+        }
+        else if (isEditing && board.isEditing) {
+            return {message: "Board is already editing"}
+        }
+        else if (!isEditing && board.isEditing) {
+            board.isEditing = false
+            board.save()
+            return {message: "Free reading and editing"}
+        }
+        else if (!isEditing && !board.isEditing) {
+            return {message: "No situation"}
+        } else {
+            throw ApiError.BadRequest("Что-то пошло не так")
+        }
     }
 }
 

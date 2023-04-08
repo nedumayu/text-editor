@@ -9,8 +9,7 @@ import path from 'path'
 
 dotenv.config()
 const PORT = process.env.PORT || 5000
-const __dirname = '/C:/Files/programming/text-editor/frontend'
-console.log(__dirname)
+const __dirname = 'D:/programming/text-editor/frontend'
 
 const app = express()
 app.use(express.json())
@@ -19,22 +18,22 @@ app.use(cors({
     credentials: true,
     origin: process.env.CLIENT_URL
 }))
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
 app.use('/', router)
 app.use(errorMiddleware)
-app.get('/boards/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-app.use(express.static(path.join(__dirname)));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// app.get('/boards/*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
+// app.use(express.static(path.join(__dirname)));
+//
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
+// app.use((req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
 
 
 const start = async() => {

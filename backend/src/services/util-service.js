@@ -57,6 +57,7 @@ class UtilService {
             title: board.title,
             date: board.date,
             isActive: board.isActive,
+            isEditing: board.isEditing,
             author: {id: authorId, username: author},
             members: boardMembers
         }

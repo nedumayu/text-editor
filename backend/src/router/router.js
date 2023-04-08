@@ -26,6 +26,7 @@ router.post('/boards', AuthMiddleware,BoardController.addBoard)
 router.get('/boards/:id', AuthMiddleware, BoardController.getBoardById)
 router.put('/boards/:id', AuthMiddleware, BoardController.updateBoard)
 router.delete('/boards/:id', AuthMiddleware, BoardController.deleteBoard)
+router.post('/boards/:id/edit', BoardController.checkEditing)
 
 router.post('/boards/:id', AuthMiddleware,BoardController.addChange)
 
