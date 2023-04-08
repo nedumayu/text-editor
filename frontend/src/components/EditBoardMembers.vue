@@ -65,7 +65,7 @@ const addMemberToBoard = (id) => {
     email: user.email
   });
   members.value = members.value.filter(member => member.id !== id);
-  emit('setMembers', [members, boardMembers])
+  emit('setMembers', [members.value, boardMembers.value])
 }
 
 const deleteMember = (id) => {
@@ -75,7 +75,7 @@ const deleteMember = (id) => {
     email: userStore.users.find(user => user.id === id).email
   });
   boardMembers.value = boardMembers.value.filter(member => member.id !== id);
-  emit('setMembers', [members, boardMembers])
+  emit('setMembers', [members.value, boardMembers.value])
 }
 
 const {searchQuery, searchedElements} = useSearching(members, 'username');

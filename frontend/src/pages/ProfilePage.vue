@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <div v-if="!isLoading && userStore.currentUser.boards.length > 0">
+    <div v-if="!isLoading && userStore.currentUser.boards.length > 0" class="w-full">
       <div class="flex justify-between">
         <div class="flex flex-wrap mb-2">
           <Input
