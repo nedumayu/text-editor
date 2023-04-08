@@ -133,7 +133,7 @@ const deleteBoard = async () => {
   await boardStore.deleteBoard(route.params.id)
   boardStore.boards = boardStore.boards.filter(board => board.id !== route.params.id)
   userStore.currentUser.boards = userStore.currentUser.boards.filter(board => board.id !== route.params.id)
-  router.go(-1);
+  await router.push('/profile')
 }
 
 const saveEdit = async () => {

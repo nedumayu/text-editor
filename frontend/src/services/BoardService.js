@@ -20,4 +20,8 @@ export default class BoardService {
     static async addChanges (id, data) {
         return api.post(`/boards/${id}`, data)
     }
+
+    static async checkEdit (id, data) {
+        return api.post(`/boards/${id}/edit`, data)
+    }
 }

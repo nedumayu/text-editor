@@ -1,9 +1,18 @@
 <template>
   <div class="card w-[300px] min-h-80 flex flex-col mr-5 mb-5 z-1 bg-base-100 shadow-xl text-primary">
     <div class="card-body">
-      <h3 class="card-title text-accent-content">
-        {{ board.title }}
-      </h3>
+      <div class="flex justify-between">
+        <h3 class="card-title text-accent-content">
+          {{ board.title }}
+        </h3>
+        <div
+            v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id) || props.board.author.id === userStore.currentUser.id)"
+            class="badge"
+            :class="{'badge-secondary': !board.isEditing, 'badge-accent': board.isEditing}">
+          {{!board.isEditing ? "free edit" : "read only"}}
+        </div>
+      </div>
+
       <div>
         Created by
         <strong>{{ board.author.username }}</strong>
@@ -21,6 +30,9 @@
 <script setup>
 import transformDate from "../utils/transformDate.js";
 import BoardMembers from "./BoardMembers.vue";
+import {useUserStore} from "../stores/UserStore.js";
+
+const userStore= useUserStore()
 
 const props = defineProps({
   board: {

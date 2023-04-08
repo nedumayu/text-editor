@@ -43,10 +43,18 @@
           Commit
         </Button>
         <button
-            @click="toggleMode"
+            v-if="!isEditorMode"
+            @click="setEditMode"
             class="btn btn-outline btn-primary ml-auto"
         >
-          {{isEditorMode ? "read mode" : "edit mode"}}
+          read mode
+        </button>
+        <button
+            v-if="isEditorMode"
+            @click="setReadMode"
+            class="btn btn-outline btn-primary ml-auto"
+        >
+          edit mode
         </button>
       </div>
     </div>
@@ -124,17 +132,41 @@ const saveContent = async () => {
   isLoading.value = false
 }
 
-const toggleMode = () => {
-  isEditorMode.value = !isEditorMode.value
-  editor.setOptions({editable: condition.value});
-  condition.value = !condition.value
-  editor.commands.focus('start')
+const setEditMode = async () => {
+  const response = await boardStore.checkEdit(boardStore.currentBoard.id, {isEditing: true})
+  if (response.message === "Ok to editing") {
+    isEditorMode.value = true
+    editor.setOptions({editable: condition.value});
+    condition.value = !condition.value
+    editor.commands.focus('start')
+    showMessage("You are in editing mode. No one can edit this board yet.")
+  } else if (response.message === "Board is already editing!") {
+    showMessage(response.message)
+  }
+}
+
+const setReadMode = async () => {
+  const response = await boardStore.checkEdit(boardStore.currentBoard.id, {isEditing: false})
+  if (response.message === "Free reading and editing") {
+    if (wasEdit.value) {
+      await saveContent()
+      showMessage("Your changes are saved")
+    }
+    isEditorMode.value = false
+    editor.setOptions({editable: condition.value});
+    condition.value = !condition.value
+  } else {
+    showMessage(response.message)
+  }
 }
 
 onBeforeUnmount(async () => {
   editor.destroy();
   if (wasEdit.value && !isCommited) {
     await commitChanges()
+  }
+  if (isEditorMode.value) {
+    await boardStore.checkEdit(boardStore.currentBoard.id, {isEditing: false})
   }
 })
 
