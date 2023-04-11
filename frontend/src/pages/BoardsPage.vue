@@ -15,14 +15,19 @@
     </div>
 
     <div class="flex flex-wrap" >
+      <transition-group name="list">
       <Board
           v-for="board of searchedElements"
           :key="board.id"
           :board="board"
+          class="list-complete-item"
       />
+        </transition-group>
     </div>
   </div>
-  <div v-else>загрузка....</div>
+  <div v-else class="w-full flex justify-center items-center h-[60vh]">
+      <Spinner/>
+  </div>
 </template>
 
 <script setup>
@@ -64,4 +69,30 @@ onMounted(async () => {
 
 <style scoped>
 
+.list-enter-active,
+.list-leave-active,
+.list-move {
+  transition: 500ms cubic-bezier(0.59, 0.12, 0.34, 0.95);
+  transition-property: opacity, transform;
+}
+
+.list-enter {
+  opacity: 0;
+  transform: translateY(-50px) scaleX(0.5);
+}
+
+.list-enter-to {
+  opacity: 1;
+  transform: translateY(0) scaleX(1);
+}
+
+.list-leave-active {
+  position: absolute;
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center top;
+}
 </style>

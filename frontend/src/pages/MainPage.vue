@@ -3,7 +3,7 @@
     <div class="flex flex-col justify-center h-[80vh]">
       <h1 class="text-[100px] leading-[105px] mb-5 font-[fleuronregular] text-primary-focus">
 <!--        <span class="font-[fleurondingbats]">Q</span>-->
-        <span ref="typing"></span> on a virtual board!
+        <span ref="typing"></span> on a <br> virtual board!
       </h1>
       <p class="mb-5 text-xl">
         Collaborate on projects with other people from anywhere in the world! Create, edit and communicate on a
@@ -76,7 +76,7 @@ const moveIcons = () => {
 onMounted(() => {
   moveIcons()
   new Typed(typing.value, {
-    strings: ["Chat", "Collab"],
+    strings: ["Chat", "Work", "Collab"],
     typeSpeed: 100,
     backSpeed: 80,
     backDelay: 1500,
@@ -97,7 +97,4 @@ onMounted(() => {
   transition: transform  .5s ease-in;
   z-index: -1;
 }
-
-
-
 </style>

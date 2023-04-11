@@ -1,5 +1,5 @@
 <template>
-  <div class="card w-[300px] min-h-80 flex flex-col mr-5 mb-5 z-1 bg-base-100 shadow-xl text-primary">
+  <div class="card w-[300px] min-h-[280px] flex flex-col mr-5 mb-5 z-1 bg-base-100 shadow-xl text-primary">
     <div class="card-body">
       <div class="flex justify-between">
         <h3 class="card-title text-accent-content">
