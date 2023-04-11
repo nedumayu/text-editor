@@ -23,6 +23,7 @@
     "lottie-web-vue": "^2.0.6",
     "pinia": "^2.0.30",
     "remixicon": "^2.5.0",
+    "typed.js": "^2.0.15",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",
     "y-webrtc": "^10.2.4",
