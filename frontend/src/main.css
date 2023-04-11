@@ -3,6 +3,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'fleuronmixed';
+    src: url('./assets/fonts/fleuronmixed-webfont.woff2') format('woff2'),
+    url('./assets/fonts/fleuronmixed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fleurondingbats';
+    src: url('./assets/fonts/fleurondingbats-webfont.woff2') format('woff2'),
+    url('./assets/fonts/fleurondingbats-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fleuronregular';
+    src: url('./assets/fonts/fleuronregular-webfont.woff2') format('woff2'),
+    url('./assets/fonts/fleuronregular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
