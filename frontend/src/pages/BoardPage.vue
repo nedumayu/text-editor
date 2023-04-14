@@ -78,6 +78,9 @@
       </div>
     </div>
   </div>
+  <div v-else class="w-full flex justify-center items-center h-[60vh]">
+    <Spinner/>
+  </div>
 </template>
 
 <script setup>

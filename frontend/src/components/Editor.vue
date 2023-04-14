@@ -47,14 +47,14 @@
             @click="setEditMode"
             class="btn btn-outline btn-primary ml-auto"
         >
-          read mode
+          edit mode
         </button>
         <button
             v-if="isEditorMode"
             @click="setReadMode"
             class="btn btn-outline btn-primary ml-auto"
         >
-          edit mode
+          read mode
         </button>
       </div>
     </div>
@@ -140,8 +140,8 @@ const setEditMode = async () => {
     condition.value = !condition.value
     editor.commands.focus('start')
     showMessage("You are in editing mode. No one can edit this board yet.")
-  } else if (response.message === "Board is already editing!") {
-    showMessage(response.message)
+  } else {
+    showMessage("Board is already editing!")
   }
 }
 

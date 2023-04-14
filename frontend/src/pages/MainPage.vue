@@ -2,7 +2,6 @@
   <div class="wrapper grid grid-cols-[2fr_3fr] mx-20">
     <div class="flex flex-col justify-center h-[80vh]">
       <h1 class="text-[100px] leading-[105px] mb-5 font-[fleuronregular] text-primary-focus">
-<!--        <span class="font-[fleurondingbats]">Q</span>-->
         <span ref="typing"></span> on a <br> virtual board!
       </h1>
       <p class="mb-5 text-xl">
@@ -24,10 +23,10 @@
       </lottie-animation>
     </div>
     <!--    -->
-    <div class="icon" v-for="(icon, index) in icons" :key="index"
-         :style="{ transform: `translate(${icon.left}px, ${icon.top}px) rotate(${icon.rotation}deg)` }">
-      <img alt="icon" :src="icon.src"/>
-    </div>
+<!--    <div class="icon" v-for="(icon, index) in icons" :key="index"-->
+<!--         :style="{ transform: `translate(${icon.left}px, ${icon.top}px) rotate(${icon.rotation}deg)` }">-->
+<!--      <img alt="icon" :src="icon.src"/>-->
+<!--    </div>-->
     <!--    -->
   </div>
 </template>
@@ -58,25 +57,25 @@ const icons = ref([
   {src: platonic, left: 0, top: 700, rotation: 0},
 ]);
 
-const moveIcons = () => {
-  icons.value.forEach((icon) => {
-    const newLeft = icon.left + Math.floor(Math.random() * 11) - 5;
-    const newTop = icon.top + Math.floor(Math.random() * 11) - 5;
-    const containerWidth = document.querySelector('.wrapper').offsetWidth;
-    const containerHeight = document.querySelector('.wrapper').offsetHeight;
-    icon.left = Math.max(0, Math.min(newLeft, containerWidth - 50));
-    icon.top = Math.max(0, Math.min(newTop, containerHeight - 50));
-    const newRotation = icon.rotation + Math.floor(Math.random() * 31) - 15
-    icon.rotation = Math.max(-30, Math.min(newRotation, 30));
-  })
-
-  requestAnimationFrame(moveIcons)
-}
+// const moveIcons = () => {
+//   icons.value.forEach((icon) => {
+//     const newLeft = icon.left + Math.floor(Math.random() * 11) - 5;
+//     const newTop = icon.top + Math.floor(Math.random() * 11) - 5;
+//     const containerWidth = document.querySelector('.wrapper').offsetWidth;
+//     const containerHeight = document.querySelector('.wrapper').offsetHeight;
+//     icon.left = Math.max(0, Math.min(newLeft, containerWidth - 50));
+//     icon.top = Math.max(0, Math.min(newTop, containerHeight - 50));
+//     const newRotation = icon.rotation + Math.floor(Math.random() * 31) - 15
+//     icon.rotation = Math.max(-30, Math.min(newRotation, 30));
+//   })
+//
+//   requestAnimationFrame(moveIcons)
+// }
 
 onMounted(() => {
-  moveIcons()
+  //moveIcons()
   new Typed(typing.value, {
-    strings: ["Chat", "Work", "Collab"],
+    strings: ["Chat", "Work"],
     typeSpeed: 100,
     backSpeed: 80,
     backDelay: 1500,
