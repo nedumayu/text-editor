@@ -96,16 +96,6 @@ class BoardService {
     }
 
     async addChange(board, user, content) {
-        const boardData = await BoardModel.findById(board)
-        if (boardData.members) {
-            for (const member of boardData.members) {
-                if (user === member.toString() || user === boardData.author.toString()) {
-                    break
-                } else {
-                    throw ApiError.BadRequest("У пользователя нет доступа к этой доске")
-                }
-            }
-        }
         const change = await ChangeModel.create(
             {
                 content,
