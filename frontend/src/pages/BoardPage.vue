@@ -62,7 +62,7 @@
         <div v-if="isCommitMode">
           Author: {{ boardStore.currentBoard.author.username }}
         </div>
-        <div class="text-base-300" v-if="isCommitMode">
+        <div class="text-base-300 mb-5" v-if="isCommitMode">
           {{ transformDate(boardStore.currentBoard.date) }}
         </div>
         <BoardMembers

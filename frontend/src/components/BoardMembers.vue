@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5">
+  <div>
     <div class="flex items-center flex-wrap">
       <div
           class="bg-white py-1 px-2 rounded-md cursor-pointer align-middle mr-1 mb-1
