@@ -65,7 +65,6 @@ export const useBoardStore = defineStore('boardStore', () => {
     const checkEdit = async (id, data) => {
         try {
             const response = await BoardService.checkEdit(id, data)
-            console.log(response.data)
             return response.data
         } catch (e) {
             console.log(e.response?.data?.message);

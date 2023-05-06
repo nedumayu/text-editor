@@ -9,26 +9,19 @@
             class="flex items-center flex-[0 0 auto] flex-wrap p-1 border-b-2 border-base-100"
             :editor="editor"
         />
-
         <EditorContent
-            class="py-5 px-4 flex-auto overflow-hidden overflow-y-scroll h-[60vh]"
+            class="py-5 px-4 flex-auto overflow-hidden overflow-y-scroll max-h-[65vh]"
             :editor="editor"
         />
-        <!--            class="py-5 px-4 flex-auto overflow-x-hidden overflow-y-auto"-->
-
       </div>
       <div v-else>
         <EditorContent
-            class="py-5 px-4 flex-auto overflow-hidden overflow-y-scroll h-[70vh]"
+            class="py-5 px-4 flex-auto overflow-hidden overflow-y-scroll h-[72vh]"
             :editor="editor"
         />
       </div>
-
-      <div
-          v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
-    || props.board.author.id === userStore.currentUser.id)"
-          class="m-3 mt-auto flex"
-      >
+      <div v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id)
+    || props.board.author.id === userStore.currentUser.id)" class="m-3 mt-auto flex">
         <Input
             v-if="isEditorMode"
             v-model="commit"
@@ -42,6 +35,7 @@
         >
           Commit
         </Button>
+
         <button
             v-if="!isEditorMode"
             @click="setEditMode"
@@ -56,6 +50,7 @@
         >
           read mode
         </button>
+
       </div>
     </div>
     <Toast :show="messageVisible">
@@ -94,8 +89,6 @@ const isLoading = ref(false)
 const message = ref('');
 const messageVisible = ref(false);
 const isEditorMode = ref(false)
-const condition = ref(!!(props.board.members.some(member => member.id === userStore.currentUser.id)
-    || props.board.author.id === userStore.currentUser.id))
 
 const wasEdit = ref(false);
 let isCommited = false;
@@ -113,11 +106,9 @@ const editor = new Editor({
     Highlight,
     TaskList,
     TaskItem,
-
   ],
-  editable: !condition.value,
+  editable: false
 });
-
 
 const saveContent = async () => {
   isLoading.value = true
@@ -136,8 +127,7 @@ const setEditMode = async () => {
   const response = await boardStore.checkEdit(boardStore.currentBoard.id, {isEditing: true})
   if (response.message === "Ok to editing") {
     isEditorMode.value = true
-    editor.setOptions({editable: condition.value});
-    condition.value = !condition.value
+    editor.setOptions({editable: true});
     editor.commands.focus('start')
     showMessage("You are in editing mode. No one can edit this board yet.")
   } else {
@@ -150,11 +140,13 @@ const setReadMode = async () => {
   if (response.message === "Free reading and editing") {
     if (wasEdit.value) {
       await saveContent()
+      if (!isCommited) {
+        await commitChanges()
+      }
       showMessage("Your changes are saved")
     }
     isEditorMode.value = false
-    editor.setOptions({editable: condition.value});
-    condition.value = !condition.value
+    editor.setOptions({editable: false});
   } else {
     showMessage(response.message)
   }
@@ -163,6 +155,7 @@ const setReadMode = async () => {
 onBeforeUnmount(async () => {
   editor.destroy();
   if (wasEdit.value && !isCommited) {
+    await saveContent()
     await commitChanges()
   }
   if (isEditorMode.value) {
@@ -180,7 +173,6 @@ const commitChanges = async () => {
       content: commit.value || 'Добавлено новое изменение',
     }
     const change = await boardStore.addChange(boardStore.currentBoard.id, newChange);
-    await saveContent()
     props.board.changes.push({
       id: change._id,
       user: {
