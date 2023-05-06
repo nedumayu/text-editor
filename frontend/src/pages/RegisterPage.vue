@@ -1,11 +1,17 @@
 <template>
-  <div>
-    <form class="flex flex-col w-96 my-12 mx-auto space-y-4" @keyup.enter="createUser">
-      <h1 class="mb-4 font-thin text-center text-4xl text-primary">Welcome aboard</h1>
+  <div class="w-96 mx-auto">
+    <h1 class="mb-8 font-thin text-center text-4xl text-primary">Welcome aboard</h1>
+    <form class="flex flex-col mx-auto" @keyup.enter="createUser">
       <Input v-model="username" :type="textType" placeholder="Username"/>
-      <Input v-model="email" :type="textType" placeholder="E-mail"/>
-      <Input v-model="password" :type="passType" placeholder="Password"/>
-      <Button @click="createUser">Sign up</Button>
+      <Input v-model="email" :type="textType" placeholder="E-mail" class="mt-4"/>
+      <Input v-model="password" :type="passType" placeholder="Password" class="mt-4"/>
+      <Button @click="createUser" class="mt-7">Sign up</Button>
+      <p class="text-neutral mt-2">
+        Already with [boardStorm]?
+        <router-link to="/login" class="text-primary underline underline-offset-4 ml-1 hover:text-secondary-focus">
+          Sign in
+        </router-link>
+      </p>
     </form>
     <Toast :show="messageVisible">
       {{ message }}
