@@ -22,11 +22,11 @@ router.put('/profile', AuthMiddleware, UserController.updateUser)
 router.delete('/profile/:id', AuthMiddleware, UserController.deleteUser)
 
 router.get('/boards', BoardController.getBoards)
-router.post('/boards', AuthMiddleware,BoardController.addBoard)
+router.post('/boards', AuthMiddleware, BoardController.addBoard)
 router.get('/boards/:id', AuthMiddleware, BoardController.getBoardById)
 router.put('/boards/:id', AuthMiddleware, BoardController.updateBoard)
 router.delete('/boards/:id', AuthMiddleware, BoardController.deleteBoard)
-router.post('/boards/:id/edit', BoardController.checkEditing)
+router.post('/boards/:id/edit', AuthMiddleware, BoardController.checkEditing)
 
 router.post('/boards/:id', AuthMiddleware,BoardController.addChange)
 

@@ -7,8 +7,9 @@ class UtilService {
         const changes = await ChangeModel.find({board: id})
         if (changes) {
             const changesWithUser = []
+            const users = await UserModel.find()
             for(let change of changes) {
-                const changeUser = await UserModel.findById(change.user.toString())
+                const changeUser = users.find(user => change.user.toString() === user._id.toString())
                 const userId = change.user
                 changesWithUser.push({
                     id: change.id,
@@ -47,11 +48,13 @@ class UtilService {
         const authorId = board.author
         const author = users.find(user => board.author.toString() === user._id.toString()).username
         const boardMembers = []
-        board.members.forEach(member => {
-            const memberId = member
-            const memberName = users.find(user => member.toString() === user._id.toString()).username
-            boardMembers.push({id: memberId, username: memberName})
-        })
+        if (board.members) {
+            board.members.forEach(member => {
+                const memberId = member
+                const memberName = users.find(user => member.toString() === user._id.toString()).username
+                boardMembers.push({id: memberId, username: memberName})
+            })
+        }
         return {
             id: board._id,
             title: board.title,
