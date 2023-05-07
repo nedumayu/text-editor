@@ -36,8 +36,21 @@ const messageVisible = ref(false);
 const userStore = useUserStore()
 
 const login = async () => {
-  await userStore.login(email.value, password.value)
-  await router.push({path: '/profile'})
+  if (email.value === '' || password.value === '') {
+    showMessage('Не все поля заполнены')
+  } else {
+    const response = await userStore.login(email.value, password.value)
+    console.log(response)
+    if (response.message === "Пользователь не зарегистрирован") {
+      showMessage(response.message)
+    }
+    if (response.message === "Неверный пароль") {
+      showMessage(response.message)
+    }
+    if (response.status === 200) {
+      await router.push({path: '/profile'})
+    }
+  }
 }
 
 const showMessage = (msg) => {

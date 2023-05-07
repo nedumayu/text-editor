@@ -81,6 +81,9 @@
         <AddBoardModal/>
       </div>
     </div>
+    <Toast :show="messageVisible">
+      {{ message }}
+    </Toast>
   </div>
 </template>
 
@@ -103,6 +106,9 @@ const router = useRouter();
 const isEdit = ref(false)
 const isLoading = ref(false)
 
+const messageVisible = ref(false);
+const message = ref('')
+
 const filteredElements = ref(userStore.currentUser.boards)
 const setFilteredElements = (f) => {
   filteredElements.value = f
@@ -114,20 +120,25 @@ const email = ref(userStore.currentUser.email)
 
 const saveEdit = () => {
   isLoading.value = true
-  const newUser = {
-    _id: userStore.currentUser.id,
-    username: username.value,
-    email: email.value
-  }
-  userStore.updateUser(newUser)
-  userStore.currentUser.username = username.value
-  userStore.currentUser.email = email.value
-  boardStore.boards.forEach(board => {
-    if (board.author.id === userStore.currentUser.id) {
-      board.author.username = username.value
+  if (username.value === '' || email.value === '') {
+    showMessage("Не все поля заполнены")
+  } else {
+    const newUser = {
+      _id: userStore.currentUser.id,
+      username: username.value,
+      email: email.value
     }
-  })
-  isEdit.value = false
+    userStore.updateUser(newUser)
+    userStore.currentUser.username = username.value
+    userStore.currentUser.email = email.value
+    boardStore.boards.forEach(board => {
+      if (board.author.id === userStore.currentUser.id) {
+        board.author.username = username.value
+      }
+    })
+    isEdit.value = false
+    showMessage("Данные успешно изменены")
+  }
   isLoading.value = false
 }
 
@@ -143,6 +154,14 @@ const logout = async () => {
 const deleteUser = async () => {
   await userStore.deleteUser(userStore.currentUser.id)
   await logout()
+}
+
+const showMessage = (msg) => {
+  message.value = msg;
+  messageVisible.value = true;
+  setTimeout(() => {
+    messageVisible.value = false;
+  }, 2000);
 }
 </script>
 

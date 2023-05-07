@@ -36,14 +36,21 @@ const messageVisible = ref(false);
 const message = ref('')
 
 const createUser = async () => {
-  const response = await userStore.registration(email.value, password.value, username.value)
-  if (response) {
-    showMessage("Вы зарегистрированы")
-    username.value = '';
-    email.value = '';
-    password.value = '';
+  if (email.value === '' || password.value === '') {
+    showMessage('Не все поля заполнены')
+  } else if (password.value.length < 3) {
+    showMessage('Пароль слишком короткий')
   } else {
-    showMessage("Произошла ошибка")
+    const response = await userStore.registration(email.value, password.value, username.value)
+    if (response.status === 200) {
+      showMessage("Вы зарегистрированы")
+      username.value = '';
+      email.value = '';
+      password.value = '';
+    }
+    if (response.message === "Пользователь с данной электронной почтой уже существует") {
+      showMessage(response.message)
+    }
   }
 }
 

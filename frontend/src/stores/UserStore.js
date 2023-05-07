@@ -18,8 +18,9 @@ export const useUserStore = defineStore('userStore', () => {
             localStorage.setItem('token', response.data.accessToken);
             isAuth.value = true
             currentUser.value = response.data.user
+            return response
         } catch (e) {
-            console.log(e.response?.data?.message);
+            return e.response?.data
         }
     }
 
@@ -27,9 +28,9 @@ export const useUserStore = defineStore('userStore', () => {
         try {
             const response = await AuthService.registration(email, password, username);
             localStorage.setItem('token', response.data.accessToken);
-            return response.data
+            return response
         } catch (e) {
-            console.log(e.response?.data?.message);
+            return e.response?.data
         }
     }
 
@@ -49,7 +50,6 @@ export const useUserStore = defineStore('userStore', () => {
         try {
             const response = await axios.get(`${API_URL}/refresh`, {withCredentials: true})
             localStorage.setItem('token', response.data.accessToken);
-            console.log(response)
             isAuth.value = true
             currentUser.value = response.data.user
         } catch (e) {
