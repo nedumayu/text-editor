@@ -24,7 +24,7 @@
       </div>
       <div
           v-else
-          v-for="change in [...changes].reverse()"
+          v-for="change in [...changes].reverse().slice(0,18)"
           :key="change.id"
           class="flex bg-secondary-focus rounded-xl px-3 py-1"
       >
