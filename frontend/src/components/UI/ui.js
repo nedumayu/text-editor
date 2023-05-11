@@ -5,6 +5,7 @@ import Select from "./Select.vue";
 import Toast from "./Toast.vue";
 import Label from "./Label.vue";
 import Spinner from "./Spinner.vue";
+import Tooltip from "./Tooltip.vue";
 
 export default [
     Button,
@@ -13,5 +14,6 @@ export default [
     Modal,
     Select,
     Toast,
-    Spinner
+    Spinner,
+    Tooltip
 ]

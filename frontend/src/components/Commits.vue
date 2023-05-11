@@ -1,42 +1,69 @@
 <template>
   <div>
     <div class="flex justify-between">
-      <Label class="mb-3">{{isCommitMode ? `LAST COMMITS:` : `COMMITS:`}}</Label>
+      <Label class="mb-3">{{ isCommitMode ? `LAST COMMITS:` : `COMMITS:` }}</Label>
       <button
           class="hover:text-accent-focus"
           @click="setCommitMode"
-      >{{isCommitMode ?  `See all --> ` : `<-- Go back`}}</button>
+      >{{ isCommitMode ? `See all --> ` : `<-- Go back` }}
+      </button>
     </div>
+
+
     <div class="flex flex-col space-y-1">
+
       <div
           v-if="isCommitMode"
           v-for="change in [...changes].reverse().slice(0,4)"
           :key="change.id"
           class="flex bg-secondary-focus rounded-xl px-3 py-1"
+          @mouseenter="showTooltip($event, change.id)"
+          @mouseleave="hidePopup"
       >
+
         <strong>
           {{ change.user.username }}
         </strong>
         <div class="w-44 ml-3">
-          {{ transformDate(change.date)}}
+          {{ transformDate(change.date) }}
         </div>
-        <div class="whitespace-nowrap	overflow-hidden w-[168px] text-ellipsis" :title="`${change.content}`">{{ change.content }}</div>
+        <div class="whitespace-nowrap	overflow-hidden w-[168px] text-ellipsis">
+          {{ change.content }}
+        </div>
+
       </div>
       <div
           v-else
           v-for="change in [...changes].reverse().slice(0,18)"
           :key="change.id"
-          class="flex bg-secondary-focus rounded-xl px-3 py-1"
+          class="flex bg-secondary-focus rounded-xl px-3 py-1 relative"
+          @mouseenter="showTooltip($event, change.id)"
+          @mouseleave="hidePopup"
       >
+
         <strong>
           {{ change.user.username }}
         </strong>
         <div class="w-44 ml-3">
-          {{ transformDate(change.date)}}
+          {{ transformDate(change.date) }}
         </div>
-        <div class="whitespace-nowrap	overflow-hidden w-[168px] text-ellipsis" :title="`${change.content}`">{{ change.content }}</div>
+        <div class="whitespace-nowrap	overflow-hidden w-[168px] text-ellipsis">
+          {{ change.content }}
+        </div>
       </div>
+      <Tooltip
+          v-if="isTooltipShow"
+          :style="{
+            top: tooltipTop + 'px',
+            left: tooltipLeft + 'px'
+          }"
+      >
+        <div> <strong>Author:</strong> {{ tooltipContent.user.username }}</div>
+        <div> <strong>Date:</strong> {{ transformDate(tooltipContent.date) }}</div>
+        <strong>Commit:</strong>
+        <blockquote>{{ tooltipContent.content }}</blockquote>
 
+      </Tooltip>
     </div>
   </div>
 </template>
@@ -46,6 +73,11 @@ import transformDate from "../utils/transformDate.js";
 import {ref} from "vue";
 
 const isCommitMode = ref(true)
+const isTooltipShow = ref(false)
+const tooltipContent = ref(null)
+
+const tooltipLeft = ref(0)
+const tooltipTop = ref(0)
 
 const props = defineProps({
   changes: {
@@ -55,6 +87,22 @@ const props = defineProps({
     }
   }
 })
+
+const showTooltip = (e, id) => {
+  tooltipContent.value = props.changes.find((change) => change.id === id);
+  isTooltipShow.value = true;
+
+  const rect = e.target.getBoundingClientRect();
+  tooltipLeft.value = rect.left + rect.width / 2 - 100 ;
+  tooltipTop.value = rect.top - rect.height - 120;
+}
+
+const hidePopup = () => {
+  isTooltipShow.value = false;
+  tooltipContent.value = null;
+  tooltipLeft.value = 0;
+  tooltipTop.value = 0;
+}
 
 const emit = defineEmits(['setMode'])
 
