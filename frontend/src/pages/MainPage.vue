@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper grid grid-cols-[2fr_3fr] mx-20">
     <div class="flex flex-col justify-center h-[80vh]">
-      <h1 class="text-[100px] leading-[105px] mb-5 font-[fleuronregular] text-primary-focus">
+      <h1 class="text-[40px] leading-[45px] xs:text-[50px] xs:leading-[55px] md:text-[60px] md:leading-[65px] lg:text-[80px] lg:leading-[85px] mb-5 font-[fleuronregular] text-primary-focus">
         <span ref="typing"></span> on a <br> virtual board!
       </h1>
       <p class="mb-5 text-xl">
