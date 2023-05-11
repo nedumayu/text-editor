@@ -1,6 +1,6 @@
 <template>
-  <div class="toast toast-top toast-end" v-if="show">
-    <div class="alert alert-info">
+  <div class="toast toast-top toast-end " v-if="show">
+    <div class="alert bg-secondary-focus max-w-[300px]">
       <slot></slot>
     </div>
   </div>
