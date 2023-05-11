@@ -124,14 +124,18 @@ const saveContent = async () => {
 }
 
 const setEditMode = async () => {
-  const response = await boardStore.checkEdit(boardStore.currentBoard.id, {isEditing: true})
+  const response = await boardStore.checkEdit(boardStore.currentBoard.id, {
+        isEditing: true,
+        editorName: userStore.currentUser.username
+      }
+  )
   if (response.message === "Ok to editing") {
     isEditorMode.value = true
     editor.setOptions({editable: true});
     editor.commands.focus('start')
     showMessage("You are in editing mode. No one can edit this board yet.")
   } else {
-    showMessage("Board is already editing!")
+    showMessage(`Board is already editing by ${response.editorName}`)
   }
 }
 

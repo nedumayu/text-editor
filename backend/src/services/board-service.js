@@ -106,7 +106,7 @@ class BoardService {
         return change
     }
 
-    async checkEditing(id, isEditing) {
+    async checkEditing(id, isEditing, editorName) {
         const board = await BoardModel.findById(id)
         if (isEditing === "true") {
             isEditing = true
@@ -116,14 +116,16 @@ class BoardService {
 
         if(isEditing && !board.isEditing) {
             board.isEditing = true
+            board.editorName = editorName
             board.save()
             return {message: "Ok to editing"}
         }
         else if (isEditing && board.isEditing) {
-            return {message: "Board is already editing"}
+            return {message: "Board is already editing", editorName: board.editorName}
         }
         else if (!isEditing && board.isEditing) {
             board.isEditing = false
+            board.editorName = ''
             board.save()
             return {message: "Free reading and editing"}
         }

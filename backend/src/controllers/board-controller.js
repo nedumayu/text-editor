@@ -65,8 +65,8 @@ class BoardController {
     async checkEditing (req, res, next) {
         try{
             const {id} = req.params
-            const {isEditing} = req.body
-            const data = await BoardService.checkEditing(id, isEditing)
+            const {isEditing, editorName} = req.body
+            const data = await BoardService.checkEditing(id, isEditing, editorName)
             return res.json(data)
         } catch (e) {
             next()
