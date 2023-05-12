@@ -133,9 +133,9 @@ const setEditMode = async () => {
     isEditorMode.value = true
     editor.setOptions({editable: true});
     editor.commands.focus('start')
-    showMessage("You are in editing mode. No one can edit this board yet.")
+    showMessage("Вы в режимме редактирования")
   } else {
-    showMessage(`Board is already editing by ${response.editorName}`)
+    showMessage(`Доска уже редактируется пользователем ${response.editorName}`)
   }
 }
 
@@ -147,7 +147,7 @@ const setReadMode = async () => {
       if (!isCommited) {
         await commitChanges()
       }
-      showMessage("Your changes are saved")
+      showMessage("Изменения сохранены")
     }
     isEditorMode.value = false
     editor.setOptions({editable: false});

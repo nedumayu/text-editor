@@ -11,7 +11,7 @@
           <Input v-model="title" v-focus class="mb-5 bg-white"/>
         </div>
         <div class="flex"
-            v-if="boardStore.currentBoard.author.id === userStore.currentUser.id"
+            v-if="boardStore.currentBoard.author.id === userStore.currentUser.id && !isEdit"
         >
           <button class="w-7 h-7 text-accent-content border border-current bg-transparent rounded-md p-1 mr-1 cursor-pointer hover:text-base-100 hover:bg-accent-content"
                   @click="isEdit = !isEdit"
