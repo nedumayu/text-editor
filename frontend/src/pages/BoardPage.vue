@@ -146,23 +146,23 @@ const saveEdit = async () => {
     title: title.value,
     isActive: isActive.value,
     members: memberIds,
-    content: boardStore.currentBoard.content
   }
   const newBoard = await boardStore.updateBoard(route.params.id, updatedBoard)
-  boardStore.currentBoard = newBoard
+  boardStore.currentBoard.title = newBoard.title
+  boardStore.currentBoard.isActive = newBoard.isActive
+  boardStore.currentBoard.members = newBoard.members
+  boardStore.currentBoard.date = newBoard.date
   if(boardStore.boards.length !== 0){
     const board = boardStore.boards.find(bd => bd.id === newBoard.id)
     board.title = newBoard.title
     board.isActive = newBoard.isActive
     board.members = newBoard.members
-    board.content = newBoard.content
     board.date = newBoard.date
   }
   const userBoard = userStore.currentUser.boards.find(board => board.id === newBoard.id)
   userBoard.title = newBoard.title
   userBoard.isActive = newBoard.isActive
   userBoard.members = newBoard.members
-  userBoard.content = newBoard.content
   userBoard.date = newBoard.date
 
   isEdit.value = false;

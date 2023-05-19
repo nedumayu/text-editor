@@ -28,7 +28,7 @@
           {{ transformDate(change.date) }}
         </div>
         <div class="whitespace-nowrap	overflow-hidden w-[168px] text-ellipsis">
-          {{ change.content }}
+          {{ change.message }}
         </div>
 
       </div>
@@ -48,7 +48,7 @@
           {{ transformDate(change.date) }}
         </div>
         <div class="whitespace-nowrap	overflow-hidden w-[168px] text-ellipsis">
-          {{ change.content }}
+          {{ change.message }}
         </div>
       </div>
       <Tooltip
@@ -60,9 +60,9 @@
       >
         <div> <strong>Author:</strong> {{ tooltipContent.user.username }}</div>
         <div> <strong>Date:</strong> {{ transformDate(tooltipContent.date) }}</div>
-        <strong>Commit:</strong>
-        <blockquote>{{ tooltipContent.content }}</blockquote>
-
+        <strong>Commit: </strong>{{ tooltipContent.message }}<br>
+        <strong v-if="tooltipContent.content">Paragraph:</strong>
+        <blockquote class="bg-white p-1 rounded-md" v-if="tooltipContent.content">{{ tooltipContent.content.slice(0,40) }}</blockquote>
       </Tooltip>
     </div>
   </div>
@@ -94,7 +94,7 @@ const showTooltip = (e, id) => {
 
   const rect = e.target.getBoundingClientRect();
   tooltipLeft.value = rect.left + rect.width / 2 - 100 ;
-  tooltipTop.value = rect.top - rect.height - 120;
+  tooltipTop.value = rect.top - rect.height - 170;
 }
 
 const hidePopup = () => {

@@ -4,10 +4,9 @@
     <div class="card-body">
       <div>
         <div
-            v-if="!!(props.board.members.some(member => member.id === userStore.currentUser.id) || props.board.author.id === userStore.currentUser.id)"
             class="badge float-right"
-            :class="{'badge-secondary': !board.isEditing, 'badge-accent': board.isEditing}">
-          {{ !board.isEditing ? "free edit" : "read only" }}
+            :class="{'badge-secondary': board.isActive, 'badge-accent': !board.isActive}">
+          {{ board.isActive ? "active" : "finished" }}
         </div>
         <h3 class="text-accent-content font-semibold leading-7 text-xl">
           {{ board.title }}
