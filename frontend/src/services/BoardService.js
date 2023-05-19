@@ -24,4 +24,16 @@ export default class BoardService {
     static async checkEdit (id, data) {
         return api.post(`/boards/${id}/edit`, data)
     }
+
+    static async addContent (id, data) {
+        return api.post(`/boards/${id}/content`, data)
+    }
+
+    static async editContent (id, data) {
+        return api.put(`/boards/${id}/content`, data)
+    }
+
+    static async deleteContent (id, paragraphId) {
+        return api.delete(`/boards/${id}/content/${paragraphId}`)
+    }
 }

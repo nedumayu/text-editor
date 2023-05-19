@@ -71,6 +71,34 @@ export const useBoardStore = defineStore('boardStore', () => {
         }
     }
 
+    const addContent = async (id, data) => {
+        try {
+            const response = await BoardService.addContent(id, data)
+            return response.data
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
+    const editContent = async (id, data) => {
+        try {
+
+            const response = await BoardService.editContent(id, data)
+            return response.data
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
+    const deleteContent = async (id, paragraphId) => {
+        try {
+            const response = await BoardService.deleteContent(id, paragraphId)
+            return response.data
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
     return {
         getBoards,
         addBoard,
@@ -79,6 +107,9 @@ export const useBoardStore = defineStore('boardStore', () => {
         deleteBoard,
         addChange,
         checkEdit,
+        addContent,
+        editContent,
+        deleteContent,
         boards,
         currentBoard,
         currentBoardId
