@@ -5,8 +5,6 @@ const BoardModel = new Schema({
     date: {type: Date, required: true},
     content: {type: Schema.Types.Mixed},
     isActive: {type: Boolean, default: true},
-    isEditing: {type: Boolean, default: false},
-    editorName: {type: String, default: ''},
     author: {type: Schema.Types.ObjectId, ref: 'User'},
     members: [{type: Schema.Types.ObjectId, ref: 'User'}]
 })

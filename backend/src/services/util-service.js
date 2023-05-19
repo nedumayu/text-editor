@@ -13,6 +13,7 @@ class UtilService {
                 const userId = change.user
                 changesWithUser.push({
                     id: change.id,
+                    message: change.message,
                     content: change.content,
                     user: {
                         id: userId,
@@ -60,8 +61,6 @@ class UtilService {
             title: board.title,
             date: board.date,
             isActive: board.isActive,
-            isEditing: board.isEditing,
-            editor: board.editorName,
             author: {id: authorId, username: author},
             members: boardMembers
         }

@@ -1,6 +1,7 @@
 import {model, Schema} from "mongoose"
 
 const ChangeModel = new Schema({
+    message: {type: String},
     content: {type: String},
     date: {type: Date, required: true},
     user: {type: Schema.Types.ObjectId, ref: 'User'},

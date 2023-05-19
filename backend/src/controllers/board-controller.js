@@ -33,8 +33,8 @@ class BoardController {
     async updateBoard(req, res, next) {
         try{
             const {id} = req.params
-            const {title, content, isActive, members} = req.body
-            const board = await BoardService.updateBoard(id, title, content, isActive, members)
+            const {title, isActive, members} = req.body
+            const board = await BoardService.updateBoard(id, title, isActive, members)
             return res.json(board)
         } catch (e) {
             next()
@@ -54,8 +54,8 @@ class BoardController {
     async addChange(req, res, next) {
         try{
             const {id} = req.params
-            const {user, content} = req.body
-            const change = await BoardService.addChange(id, user, content)
+            const {user, content, message} = req.body
+            const change = await BoardService.addChange(id, user, content, message)
             return res.json(change)
         } catch (e) {
             next()
@@ -65,8 +65,40 @@ class BoardController {
     async checkEditing (req, res, next) {
         try{
             const {id} = req.params
-            const {isEditing, editorName} = req.body
-            const data = await BoardService.checkEditing(id, isEditing, editorName)
+            const {editorName, paragraphId} = req.body
+            const data = await BoardService.checkEditing(id, editorName, paragraphId)
+            return res.json(data)
+        } catch (e) {
+            next()
+        }
+    }
+
+    async addContent (req, res, next) {
+        try{
+            const {id} = req.params
+            const {paragraphId} = req.body
+            const data = await BoardService.addContent(id, paragraphId)
+            return res.json(data)
+        } catch (e) {
+            next()
+        }
+    }
+
+    async editContent (req, res, next) {
+        try{
+            const {id} = req.params
+            const {paragraphId, content} = req.body
+            const data = await BoardService.editContent(id, paragraphId, content)
+            return res.json(data)
+        } catch (e) {
+            next()
+        }
+    }
+
+    async deleteContent (req, res, next) {
+        try{
+            const {id, paragraphId} = req.params
+            const data = await BoardService.deleteContent(id, paragraphId)
             return res.json(data)
         } catch (e) {
             next()

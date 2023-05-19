@@ -2,8 +2,8 @@ import BoardModel from "../models/board-model.js";
 import UserModel from "../models/user-model.js";
 import {ObjectId} from "mongodb";
 import ChangeModel from "../models/change-model.js";
-import ApiError from "../exceptions/api-errors.js";
 import UtilService from "./util-service.js";
+import uniqid from "uniqid";
 
 class BoardService {
     async getBoardById(id) {
@@ -30,7 +30,23 @@ class BoardService {
             date: new Date(),
             author: new ObjectId(author),
             members: membersIds,
-            content: {},
+            content: {
+                type: "doc",
+                content: [
+                    {
+                        id: uniqid(),
+                        isEditing: false,
+                        editorName: "",
+                        type: "paragraph",
+                        content: [
+                            {
+                                type: "text",
+                                text: " "
+                            }
+                        ]
+                    }
+                ]
+            },
         })
         const user = await UserModel.findById(author)
         user.boards.push(board._id)
@@ -46,7 +62,7 @@ class BoardService {
         return newBoard
     }
 
-    async updateBoard(id, title, content, isActive, members) {
+    async updateBoard(id, title, isActive, members) {
         const board = await BoardModel.findById(id)
         if (board.members.toString() !== members.toString()) {
             for (const memberId of board.members) {
@@ -72,10 +88,15 @@ class BoardService {
                 }
             }
         }
-        const bb = await BoardModel.findByIdAndUpdate(id, {title, date: new Date(), content, isActive, members}, {new: true})
+        const bb = await BoardModel.findByIdAndUpdate(id, {
+            title,
+            date: new Date(),
+            isActive,
+            members
+        }, {new: true})
         const newBoard = await UtilService.getBoardUsers(bb)
         const boardChanges = await UtilService.getBoardChanges(id)
-        return {...newBoard, changes: boardChanges, content}
+        return {...newBoard, changes: boardChanges}
     }
 
     async deleteBoard(id) {
@@ -95,9 +116,10 @@ class BoardService {
         return deletedBoard
     }
 
-    async addChange(board, user, content) {
+    async addChange(board, user, content, message) {
         const change = await ChangeModel.create(
             {
+                message,
                 content,
                 date: new Date(),
                 user: new ObjectId(user),
@@ -106,33 +128,69 @@ class BoardService {
         return change
     }
 
-    async checkEditing(id, isEditing, editorName) {
+    async checkEditing(id, editorName, paragraphId) {
         const board = await BoardModel.findById(id)
-        if (isEditing === "true") {
-            isEditing = true
-        } else if (isEditing === "false") {
-            isEditing = false
-        }
-
-        if(isEditing && !board.isEditing) {
+        const isEditing =  board.content.content.find(el => el.id === paragraphId).isEditing
+        if (!isEditing) {
+            board.content.content.find(el => el.id === paragraphId).isEditing = true
+            board.content.content.find(el => el.id === paragraphId).editorName = editorName
             board.isEditing = true
-            board.editorName = editorName
+            board.markModified('content.content')
             board.save()
             return {message: "Ok to editing"}
-        }
-        else if (isEditing && board.isEditing) {
-            return {message: "Board is already editing", editorName: board.editorName}
-        }
-        else if (!isEditing && board.isEditing) {
-            board.isEditing = false
-            board.editorName = ''
-            board.save()
-            return {message: "Free reading and editing"}
-        }
-        else if (!isEditing && !board.isEditing) {
-            return {message: "No situation"}
         } else {
-            throw ApiError.BadRequest("Что-то пошло не так")
+            const name = board.content.content.find(el => el.id === paragraphId).editorName
+            return {message: "Board is already editing", editorName: name}
+        }
+    }
+
+    async addContent(id, paragraphId) {
+        if (paragraphId) {
+            const board = await BoardModel.findById(id)
+            const chunks = board.content.content
+            chunks.forEach((chunk, index) => chunk.index = index)
+            const index = chunks.find(el => el.id === paragraphId).index
+            const newParagraph = {
+                id: uniqid(),
+                isEditing: false,
+                editorName: "",
+                type: "paragraph",
+                content: [
+                    {
+                        type: "text",
+                        text: " "
+                    }
+                ]
+            }
+            board.content.content = [...chunks.slice(0, index + 1), newParagraph, ...chunks.slice(index + 1)]
+            board.content.content.forEach(item => delete item.index)
+            board.markModified('content.content')
+            board.save()
+            return {content: board.content, newParagraph, index}
+        } else {
+            return {message: "Paragraph is not exist. Update the page"}
+        }
+    }
+
+    async editContent(id, paragraphId, content) {
+        const board = await BoardModel.findById(id)
+        board.content.content.find(item => item.id === paragraphId).content = content
+        board.content.content.find(item => item.id === paragraphId).isEditing = false
+        board.content.content.find(item => item.id === paragraphId).editorName = ""
+        board.markModified('content.content')
+        board.save()
+        return board.content
+    }
+
+    async deleteContent(id, paragraphId) {
+        if (paragraphId) {
+            const board = await BoardModel.findById(id)
+            board.content.content = board.content.content.filter(item => item.id !== paragraphId)
+            board.markModified('content.content')
+            board.save()
+            return board.content
+        } else {
+            return {message: "Paragraph is not exist. Update the page"}
         }
     }
 }
