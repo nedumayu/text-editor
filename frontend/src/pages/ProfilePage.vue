@@ -131,6 +131,11 @@ const saveEdit = () => {
     userStore.updateUser(newUser)
     userStore.currentUser.username = username.value
     userStore.currentUser.email = email.value
+    userStore.currentUser.boards.forEach(board => {
+      if (board.author.id === userStore.currentUser.id) {
+        board.author.username = username.value
+      }
+    })
     boardStore.boards.forEach(board => {
       if (board.author.id === userStore.currentUser.id) {
         board.author.username = username.value
@@ -147,7 +152,7 @@ const logout = async () => {
   await userStore.logout()
   userStore.users = []
   boardStore.boards = []
-  await router.push('/')
+  await router.push('/login')
   isLoading.value = false
 }
 

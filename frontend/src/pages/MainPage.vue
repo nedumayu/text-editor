@@ -76,9 +76,9 @@ onMounted(() => {
   //moveIcons()
   new Typed(typing.value, {
     strings: ["Chat", "Work"],
-    typeSpeed: 100,
+    typeSpeed: 120,
     backSpeed: 80,
-    backDelay: 1500,
+    backDelay: 1800,
     loop: true
   });
 })

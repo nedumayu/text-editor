@@ -16,7 +16,7 @@
           v-if="isCommitMode"
           v-for="change in [...changes].reverse().slice(0,4)"
           :key="change.id"
-          class="flex bg-secondary-focus rounded-xl px-3 py-1"
+          class="flex bg-secondary-focus rounded-xl px-3 py-1 hover:bg-secondary-focus/70"
           @mouseenter="showTooltip($event, change.id)"
           @mouseleave="hidePopup"
       >
@@ -62,7 +62,7 @@
         <div> <strong>Date:</strong> {{ transformDate(tooltipContent.date) }}</div>
         <strong>Commit: </strong>{{ tooltipContent.message }}<br>
         <strong v-if="tooltipContent.content">Paragraph:</strong>
-        <blockquote class="bg-white p-1 rounded-md" v-if="tooltipContent.content">{{ tooltipContent.content.slice(0,40) }}</blockquote>
+        <blockquote class="bg-white p-1 rounded-md" v-if="tooltipContent.content">{{ tooltipContent.content.slice(0,55) }}...</blockquote>
       </Tooltip>
     </div>
   </div>
