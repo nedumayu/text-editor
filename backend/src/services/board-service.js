@@ -128,13 +128,17 @@ class BoardService {
         return change
     }
 
+    async refreshContent(id) {
+        const board = await BoardModel.findById(id)
+        return board.content
+    }
+
     async checkEditing(id, editorName, paragraphId) {
         const board = await BoardModel.findById(id)
-        const isEditing =  board.content.content.find(el => el.id === paragraphId).isEditing
+        const isEditing = board.content.content.find(el => el.id === paragraphId).isEditing
         if (!isEditing) {
             board.content.content.find(el => el.id === paragraphId).isEditing = true
             board.content.content.find(el => el.id === paragraphId).editorName = editorName
-            board.isEditing = true
             board.markModified('content.content')
             board.save()
             return {message: "Ok to editing"}
@@ -145,52 +149,117 @@ class BoardService {
     }
 
     async addContent(id, paragraphId) {
-        if (paragraphId) {
-            const board = await BoardModel.findById(id)
-            const chunks = board.content.content
-            chunks.forEach((chunk, index) => chunk.index = index)
-            const index = chunks.find(el => el.id === paragraphId).index
-            const newParagraph = {
-                id: uniqid(),
-                isEditing: false,
-                editorName: "",
-                type: "paragraph",
-                content: [
-                    {
-                        type: "text",
-                        text: " "
-                    }
-                ]
+        try {
+            if (paragraphId) {
+                const board = await BoardModel.findById(id)
+                const chunks = board.content.content
+                chunks.forEach((chunk, index) => chunk.index = index)
+                const index = chunks.findIndex(el => el.id === paragraphId);
+                const newParagraph = {
+                    id: uniqid(),
+                    isEditing: false,
+                    editorName: "",
+                    type: "paragraph",
+                    content: [
+                        {
+                            type: "text",
+                            text: " "
+                        }
+                    ]
+                }
+                board.content.content = [...chunks.slice(0, index + 1), newParagraph, ...chunks.slice(index + 1)]
+                board.content.content.forEach(item => delete item.index)
+                board.markModified('content.content')
+                const updatedBoard = await board.save();
+                if (!updatedBoard) {
+                    throw new Error('Failed to save changes due to version conflict.');
+                }
+
+                return {content: updatedBoard.content, newParagraph, index};
+            } else {
+                return {message: "Paragraph does not exist. Update the page."};
             }
-            board.content.content = [...chunks.slice(0, index + 1), newParagraph, ...chunks.slice(index + 1)]
-            board.content.content.forEach(item => delete item.index)
-            board.markModified('content.content')
-            board.save()
-            return {content: board.content, newParagraph, index}
-        } else {
-            return {message: "Paragraph is not exist. Update the page"}
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     }
 
+
     async editContent(id, paragraphId, content) {
-        const board = await BoardModel.findById(id)
-        board.content.content.find(item => item.id === paragraphId).content = content
-        board.content.content.find(item => item.id === paragraphId).isEditing = false
-        board.content.content.find(item => item.id === paragraphId).editorName = ""
-        board.markModified('content.content')
-        board.save()
-        return board.content
+        try {
+            const board = await BoardModel.findById(id)
+            const paragraph = board.content.content.find(item => item.id === paragraphId);
+
+            paragraph.type = content[0].type;
+            paragraph.content = content[0].content;
+
+            if (content[0].attrs) {
+                paragraph.attrs = content[0].attrs;
+            }
+
+            paragraph.isEditing = false;
+            paragraph.editorName = "";
+            board.markModified('content.content')
+            const updatedBoard = await board.save();
+            if (content.length > 1) {
+                for (let i = 1; i < content.length; i++) {
+                    const board = await BoardModel.findById(id)
+                    const chunks = board.content.content
+                    chunks.forEach((chunk, index) => chunk.index = index)
+                    const index = chunks.findIndex(el => el.id === paragraphId);
+                    const newId = uniqid()
+                    const newParagraph = {
+                        id: newId,
+                        isEditing: false,
+                        editorName: "",
+                        type: content[i].type,
+                        content: content[i].content
+                    }
+                    board.content.content = [...chunks.slice(0, index + 1), newParagraph, ...chunks.slice(index + 1)]
+                    board.content.content.forEach(item => delete item.index)
+                    board.markModified('content.content')
+
+                    const updatedBoard = await board.save();
+                    if (!updatedBoard) {
+                        throw new Error('Failed to save changes due to version conflict.');
+                    }
+                    console.log('Document saved successfully.');
+
+                    paragraphId = newId
+                }
+            }
+            return updatedBoard.content
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async deleteContent(id, paragraphId) {
-        if (paragraphId) {
-            const board = await BoardModel.findById(id)
-            board.content.content = board.content.content.filter(item => item.id !== paragraphId)
-            board.markModified('content.content')
-            board.save()
-            return board.content
-        } else {
-            return {message: "Paragraph is not exist. Update the page"}
+        try {
+            if (paragraphId) {
+                const board = await BoardModel.findById(id);
+                const paragraphIndex = board.content.content.findIndex(item => item.id === paragraphId);
+
+                if (paragraphIndex !== -1) {
+                    board.content.content.splice(paragraphIndex, 1);
+                    board.markModified('content.content');
+
+                    const updatedBoard = await board.save();
+                    if (!updatedBoard) {
+                        throw new Error('Failed to save changes due to version conflict.');
+                    }
+
+                    return updatedBoard.content;
+                } else {
+                    return {message: "Paragraph does not exist. Update the page."};
+                }
+            } else {
+                return {message: "Paragraph ID is not provided."};
+            }
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     }
 }
