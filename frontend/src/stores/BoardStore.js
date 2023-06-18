@@ -7,7 +7,6 @@ import BoardService from "../services/BoardService.js";
 export const useBoardStore = defineStore('boardStore', () => {
     const boards = ref([]);
     const currentBoard = ref({})
-    const currentBoardId = ref(null)
 
     const getBoards = async() => {
         try {
@@ -62,6 +61,15 @@ export const useBoardStore = defineStore('boardStore', () => {
         }
     }
 
+    const refreshContent = async (id) => {
+        try {
+            const response = await BoardService.refreshContent(id)
+            return response.data
+        } catch (e) {
+            console.log(e.response?.data?.message);
+        }
+    }
+
     const checkEdit = async (id, data) => {
         try {
             const response = await BoardService.checkEdit(id, data)
@@ -106,12 +114,12 @@ export const useBoardStore = defineStore('boardStore', () => {
         updateBoard,
         deleteBoard,
         addChange,
+        refreshContent,
         checkEdit,
         addContent,
         editContent,
         deleteContent,
         boards,
-        currentBoard,
-        currentBoardId
+        currentBoard
     }
 })

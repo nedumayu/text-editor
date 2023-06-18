@@ -67,7 +67,7 @@
               </button>
             </div>
 
-            <EditorContent :editor="editor" @keyup.enter="addParagraphByEnter(editor.options.id)"/>
+            <EditorContent :editor="editor" />
           </div>
           <div v-if="items.every(item => item.isEditing) || !boardStore.currentBoard.content.content" class="flex justify-center">
             <Button class="btn-primary mt-10" @click="addNewParagraph">Add paragraph</Button>
@@ -86,7 +86,7 @@
             v-if="isEditorMode"
             v-model="commit"
             placeholder="Enter your message"
-            class="w-52"
+            class="w-72"
         />
         <Button
             v-if="!isLoading & isEditorMode"
@@ -98,7 +98,7 @@
 
         <button
             v-if="!isEditorMode"
-            @click="isEditorMode = true"
+            @click="setEditMode"
             class="btn btn-outline btn-primary ml-auto"
         >
           edit mode
@@ -156,23 +156,13 @@ const isChunkEdit = ref([])
 const isHover = ref([])
 const editors = ref([])
 
-const DisableEnter = Extension.create({
-  addKeyboardShortcuts() {return {Enter: () => true}},
-});
-
-onMounted(() => {
-  isLoading.value = true
-  updateEditors()
-  isLoading.value = false
-})
-
 const createEditor = (item) => {
   return new Editor({
     content: {
       type: "doc",
       content: [item]
     },
-    onUpdate: () => {
+    onUpdate: ({editor}) => {
       wasEdit.value = true
     },
     extensions: [
@@ -180,7 +170,6 @@ const createEditor = (item) => {
       Highlight,
       TaskList,
       TaskItem,
-      DisableEnter
     ],
     editable: false,
     name: item.editorName,
@@ -202,6 +191,24 @@ const updateEditors = () => {
     const edit = createEditor(item)
     editors.value.push(edit)
   })
+}
+
+const setEditMode = async () => {
+  isLoading.value = true
+  updateEditors()
+  isLoading.value = false
+  isEditorMode.value = true
+}
+
+const setReadMode = async () => {
+  isLoading.value = true
+  isEditorMode.value = false
+  const content = await boardStore.refreshContent(boardStore.currentBoard.id)
+  editor.value.commands.setContent(content)
+  boardStore.currentBoard.content = content
+  editors.value.forEach(editor => editor.destroy())
+  editors.value = editors.value.filter(editor => editor.options.id === 1)
+  isLoading.value = false
 }
 
 const editor = ref(new Editor({
@@ -242,7 +249,7 @@ const setEdit = async (index) => {
 const saveParagraph = async (id) => {
   isLoading.value = true
   const editor = findEditorById(id)
-  const content = editor.getJSON().content[0].content
+  const content = editor.getJSON().content
   const response = await boardStore.editContent(boardStore.currentBoard.id, {paragraphId: id, content: content})
   await commitChanges(editor.getText())
   boardStore.currentBoard.content = response
@@ -250,6 +257,9 @@ const saveParagraph = async (id) => {
   isChunkEdit.value.find(chunk => chunk.id === id).value = false
   currentEditorId.value = null
   isLoading.value = false
+  if (content.length > 1) {
+    await setReadMode()
+  }
 }
 
 const addParagraph = async (id) => {
@@ -293,22 +303,6 @@ const addParagraphByEnter = async (id) => {
 const addNewParagraph = async () => {
 
 }
-
-const setReadMode = async () => {
-  isLoading.value = true
-  isEditorMode.value = false
-  editor.value.commands.setContent(boardStore.currentBoard.content)
-  isLoading.value = false
-}
-
-onBeforeUnmount(async () => {
-  if (currentEditorId.value) {
-    await saveParagraph(currentEditorId.value)
-    currentEditorId.value = null
-  }
-  editor.value.destroy();
-  editors.value.forEach(editor => editor.destroy())
-})
 
 const createCommit = (content, message) => {
   return {
@@ -364,6 +358,15 @@ const commitChanges = async (content) => {
   }
 }
 
+onBeforeUnmount(async () => {
+  if (currentEditorId.value) {
+    await saveParagraph(currentEditorId.value)
+    currentEditorId.value = null
+  }
+  editor.value.destroy();
+  editors.value.forEach(editor => editor.destroy())
+})
+
 const showMessage = (msg) => {
   message.value = msg;
   messageVisible.value = true;
@@ -417,7 +420,7 @@ const showMessage = (msg) => {
   }
 
   pre {
-    background: hsl(var(--pf));
+    background: rgba(43, 68, 41, 0.75);
     color: #FFF;
     font-family: 'JetBrainsMono', monospace;
     padding: 0.75rem 1rem;

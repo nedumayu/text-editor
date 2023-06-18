@@ -36,4 +36,8 @@ export default class BoardService {
     static async deleteContent (id, paragraphId) {
         return api.delete(`/boards/${id}/content/${paragraphId}`)
     }
+
+    static async refreshContent (id) {
+        return api.get(`/boards/${id}/content`)
+    }
 }
