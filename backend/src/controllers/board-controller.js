@@ -62,6 +62,16 @@ class BoardController {
         }
     }
 
+    async refreshContent (req, res, next) {
+        try{
+            const {id} = req.params
+            const data = await BoardService.refreshContent(id)
+            return res.json(data)
+        } catch (e) {
+            next()
+        }
+    }
+
     async checkEditing (req, res, next) {
         try{
             const {id} = req.params

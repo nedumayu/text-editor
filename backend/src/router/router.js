@@ -30,6 +30,7 @@ router.post('/boards/:id/edit', AuthMiddleware, BoardController.checkEditing)
 router.post('/boards/:id/content',  AuthMiddleware,BoardController.addContent)
 router.put('/boards/:id/content', AuthMiddleware, BoardController.editContent)
 router.delete('/boards/:id/content/:paragraphId', AuthMiddleware, BoardController.deleteContent)
+router.get('/boards/:id/content/', AuthMiddleware, BoardController.refreshContent)
 
 router.post('/boards/:id', AuthMiddleware,BoardController.addChange)
 
